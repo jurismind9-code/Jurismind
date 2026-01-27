@@ -43,11 +43,9 @@ ENV/
 *.png
 *.gif
 
-# Allow payment screenshots folder (but not individual large files)
-!payment_screenshots/
-payment_screenshots/*.jpeg
-payment_screenshots/*.jpg
-payment_screenshots/*.png
+# Allow static folder for CSS, JS and other assets
+!static/
+static/*
 
 # IDE
 .vscode/
