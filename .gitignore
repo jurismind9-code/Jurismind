@@ -43,6 +43,12 @@ ENV/
 *.png
 *.gif
 
+# Allow payment screenshots folder (but not individual large files)
+!payment_screenshots/
+payment_screenshots/*.jpeg
+payment_screenshots/*.jpg
+payment_screenshots/*.png
+
 # IDE
 .vscode/
 .idea/
