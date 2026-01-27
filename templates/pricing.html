@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - JurisMind AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a67d8;
+            --primary-light: #a3bffa;
+            --secondary: #764ba2;
+            --dark: #1a202c;
+            --gray: #718096;
+            --gray-light: #e2e8f0;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-light: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--dark);
+            text-decoration: none;
+        }
+
+        .logo span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--gray);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Hero Section */
+        .pricing-hero {
+            padding: 8rem 2rem 4rem;
+            text-align: center;
+            background: var(--gradient);
+            color: white;
+        }
+
+        .pricing-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Toggle */
+        .billing-toggle {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .billing-toggle span {
+            font-weight: 500;
+        }
+
+        .toggle-switch {
+            width: 60px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            left: 33px;
+        }
+
+        .save-badge {
+            background: var(--success);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Pricing Cards */
+        .pricing-section {
+            padding: 4rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-top: -3rem;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .pricing-card.popular {
+            border: 3px solid var(--primary);
+            transform: scale(1.05);
+        }
+
+        .pricing-card.popular:hover {
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .plan-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-icon.free {
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
+            color: var(--gray);
+        }
+
+        .plan-icon.pro {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .plan-icon.enterprise {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            color: white;
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-description {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-price {
+            margin-bottom: 1.5rem;
+        }
+
+        .price-amount {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .price-currency {
+            font-size: 1.5rem;
+            vertical-align: top;
+        }
+
+        .price-period {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        .price-usd {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .plan-features li {
+            padding: 0.75rem 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+
+        .plan-features li i {
+            margin-top: 0.2rem;
+        }
+
+        .plan-features li i.fa-check {
+            color: var(--success);
+        }
+
+        .plan-features li i.fa-times {
+            color: #ef4444;
+        }
+
+        .plan-features li span.disabled {
+            color: var(--gray);
+            text-decoration: line-through;
+        }
+
+        .plan-btn {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .plan-btn.current {
+            background: var(--gray-light);
+            color: var(--gray);
+            cursor: default;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 4rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .faq-item {
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .faq-question {
+            padding: 1.25rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .faq-question:hover {
+            background: var(--gradient-light);
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s;
+            color: var(--gray);
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            padding: 0 1.5rem 1.25rem;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .footer-logo span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 10000;
+        }
+
+        .toast {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            animation: toastSlide 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .toast.success {
+            background: var(--success);
+            color: white;
+        }
+
+        .toast.error {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Payment Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 24px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--gray-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--dark);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .payment-info {
+            background: var(--gradient-light);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .payment-amount {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .upi-container {
+            background: white;
+            border: 2px dashed var(--primary);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .upi-label {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .upi-id {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark);
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .copy-btn {
+            background: var(--gradient);
+            border: none;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .payment-steps {
+            margin-bottom: 1.5rem;
+        }
+
+        .payment-steps h4 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .step {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            background: var(--gradient);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            color: var(--gray);
+            line-height: 1.5;
+            padding-top: 0.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .file-upload {
+            border: 2px dashed var(--gray-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: var(--gradient-light);
+        }
+
+        .file-upload.has-file {
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .file-upload input {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-upload i {
+            font-size: 2rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .file-upload.has-file i {
+            color: var(--success);
+        }
+
+        .file-upload p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .file-name {
+            margin-top: 0.5rem;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        .submit-payment {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+        }
+
+        .submit-payment:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Request Status */
+        .request-status {
+            background: var(--gradient-light);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .status-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin: 0 auto 1rem;
+        }
+
+        .status-icon.pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .status-icon.approved {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .status-icon.rejected {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .status-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-message {
+            color: var(--gray);
+        }
+
+        @keyframes toastSlide {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .pricing-hero h1 {
+                font-size: 2rem;
+            }
+
+            .pricing-card.popular {
+                transform: scale(1);
+            }
+
+            .pricing-card.popular:hover {
+                transform: translateY(-10px);
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">Juris<span>Mind</span> AI</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/pricing" class="active">Pricing</a>
+                <a href="/#app">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pricing-hero">
+        <h1>Simple, Transparent Pricing</h1>
+        <p>Choose the perfect plan for your legal research needs. Start free, upgrade when you need more.</p>
+    </section>
+
+    <!-- Pricing Cards -->
+    <section class="pricing-section">
+        <div class="pricing-grid">
+            <!-- Free Plan -->
+            <div class="pricing-card" id="freePlan">
+                <div class="plan-icon free">
+                    <i class="fas fa-gift"></i>
+                </div>
+                <h3 class="plan-name">Free</h3>
+                <p class="plan-description">Perfect for getting started</p>
+                <div class="plan-price">
+                    <span class="price-currency">&#8377;</span><span class="price-amount">0</span>
+                    <span class="price-period">/month</span>
+                    <p class="price-usd">$0 USD</p>
+                </div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i> 10 documents/month</li>
+                    <li><i class="fas fa-check"></i> Max 40 pages per document</li>
+                    <li><i class="fas fa-check"></i> Case Brief Generation</li>
+                    <li><i class="fas fa-check"></i> PDF files only</li>
+                    <li><i class="fas fa-check"></i> English language only</li>
+                    <li><i class="fas fa-times"></i> <span class="disabled">Semantic Q&A</span></li>
+                    <li><i class="fas fa-times"></i> <span class="disabled">Document Analysis</span></li>
+                    <li><i class="fas fa-times"></i> <span class="disabled">Export to PDF/DOCX</span></li>
+                    <li><i class="fas fa-times"></i> <span class="disabled">Document History</span></li>
+                </ul>
+                <button class="btn plan-btn current" id="freeBtn">Current Plan</button>
+            </div>
+
+            <!-- Pro Plan -->
+            <div class="pricing-card popular" id="proPlan">
+                <div class="popular-badge">Most Popular</div>
+                <div class="plan-icon pro">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h3 class="plan-name">Pro</h3>
+                <p class="plan-description">Best for professionals</p>
+                <div class="plan-price">
+                    <span class="price-currency">&#8377;</span><span class="price-amount">149</span>
+                    <span class="price-period">/month</span>
+                    <p class="price-usd">~$1.80 USD</p>
+                </div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i> 80 documents/month</li>
+                    <li><i class="fas fa-check"></i> Up to 500 pages per document</li>
+                    <li><i class="fas fa-check"></i> Case Brief Generation</li>
+                    <li><i class="fas fa-check"></i> Document Analysis</li>
+                    <li><i class="fas fa-check"></i> Semantic Q&A</li>
+                    <li><i class="fas fa-check"></i> PDF, DOCX, TXT & URL support</li>
+                    <li><i class="fas fa-check"></i> Hindi + English support</li>
+                    <li><i class="fas fa-check"></i> Export to PDF/DOCX</li>
+                    <li><i class="fas fa-check"></i> Document History</li>
+                    <li><i class="fas fa-check"></i> Priority Processing</li>
+                </ul>
+                <button class="btn btn-primary plan-btn" id="proBtn" onclick="openPaymentModal()">
+                    <i class="fas fa-arrow-up"></i> Upgrade to Pro
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Modal -->
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-credit-card"></i> Upgrade to Pro</h3>
+                <button class="modal-close" onclick="closePaymentModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="paymentModalBody">
+                <!-- Payment Form - will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <h2 class="faq-title">Frequently Asked Questions</h2>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                What happens when I reach my document limit?
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                When you reach your monthly document limit, you'll need to upgrade to Pro or wait for the next billing cycle. Your existing documents and analyses remain accessible.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                Can I cancel my subscription anytime?
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Yes! You can cancel your Pro subscription at any time. You'll continue to have access to Pro features until the end of your billing period.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                What file formats are supported?
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Free plan supports PDF files only. Pro plan supports PDF, DOCX, TXT files, and can also load content from URLs.
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleFaq(this)">
+                Is my data secure?
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                Yes, we take security seriously. Your documents are processed securely and are not stored permanently. We use industry-standard encryption for all data transfers.
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-logo">Juris<span>Mind</span> AI</div>
+        <p style="opacity: 0.7; margin-bottom: 1rem;">Transform your legal research with AI</p>
+        <p style="opacity: 0.5; font-size: 0.9rem;">&copy; 2025 JurisMind AI. All rights reserved.</p>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        let upiId = '';
+        let selectedFile = null;
+
+        // Check current plan and update UI
+        async function checkCurrentPlan() {
+            try {
+                const response = await fetch('/api/subscription/current');
+                const data = await response.json();
+
+                if (data.success) {
+                    const currentPlan = data.plan;
+
+                    // Update button states
+                    document.getElementById('freeBtn').classList.remove('current', 'btn-primary');
+                    document.getElementById('proBtn').classList.remove('current');
+
+                    if (currentPlan === 'free') {
+                        document.getElementById('freeBtn').classList.add('current');
+                        document.getElementById('freeBtn').textContent = 'Current Plan';
+                        document.getElementById('proBtn').innerHTML = '<i class="fas fa-arrow-up"></i> Upgrade to Pro';
+                        document.getElementById('proBtn').onclick = openPaymentModal;
+                    } else if (currentPlan === 'pro') {
+                        document.getElementById('proBtn').classList.add('current');
+                        document.getElementById('proBtn').textContent = 'Current Plan';
+                        document.getElementById('proBtn').onclick = null;
+                        document.getElementById('freeBtn').innerHTML = 'Free Plan';
+                    }
+
+                    // Show usage info
+                    if (data.limits) {
+                        const docsUsed = data.limits.documents.used;
+                        const docsLimit = data.limits.documents.limit;
+                        if (docsLimit !== -1) {
+                            console.log(`Documents used: ${docsUsed}/${docsLimit}`);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.log('Not logged in or error fetching plan');
+            }
+        }
+
+        // Get UPI info
+        async function getUpiInfo() {
+            try {
+                const response = await fetch('/api/subscription/upi-info');
+                const data = await response.json();
+                if (data.success) {
+                    upiId = data.upi_id;
+                }
+            } catch (error) {
+                console.error('Error fetching UPI info');
+            }
+        }
+
+        // Check request status
+        async function checkRequestStatus() {
+            try {
+                const response = await fetch('/api/subscription/request-status');
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                return { success: false };
+            }
+        }
+
+        // Open payment modal
+        async function openPaymentModal() {
+            // Check if user is logged in first
+            const planResponse = await fetch('/api/subscription/current');
+            const planData = await planResponse.json();
+
+            if (!planData.success) {
+                showToast('Please login to upgrade your plan', 'error');
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 1500);
+                return;
+            }
+
+            if (planData.plan === 'pro') {
+                showToast('You already have Pro plan!', 'success');
+                return;
+            }
+
+            // Check for existing request
+            const statusData = await checkRequestStatus();
+
+            const modalBody = document.getElementById('paymentModalBody');
+
+            if (statusData.success && statusData.has_request) {
+                // Show existing request status
+                const status = statusData.status;
+                let iconClass = '', icon = '', title = '', message = '';
+
+                if (status === 'pending') {
+                    iconClass = 'pending';
+                    icon = 'clock';
+                    title = 'Payment Under Review';
+                    message = 'Your payment is being verified. This usually takes 24-48 hours. You will be notified once approved.';
+                } else if (status === 'approved') {
+                    iconClass = 'approved';
+                    icon = 'check';
+                    title = 'Payment Approved!';
+                    message = 'Your Pro subscription is now active. Enjoy all the premium features!';
+                } else if (status === 'rejected') {
+                    iconClass = 'rejected';
+                    icon = 'times';
+                    title = 'Payment Rejected';
+                    message = statusData.rejection_reason || 'Your payment could not be verified. Please try again with a valid payment.';
+                }
+
+                modalBody.innerHTML = `
+                    <div class="request-status">
+                        <div class="status-icon ${iconClass}">
+                            <i class="fas fa-${icon}"></i>
+                        </div>
+                        <h4 class="status-title">${title}</h4>
+                        <p class="status-message">${message}</p>
+                        ${status === 'rejected' ? '<button class="btn btn-primary" style="margin-top: 1rem;" onclick="showPaymentForm()">Try Again</button>' : ''}
+                    </div>
+                `;
+            } else {
+                // Show payment form
+                showPaymentForm();
+            }
+
+            document.getElementById('paymentModal').classList.add('active');
+        }
+
+        // Show payment form
+        function showPaymentForm() {
+            const modalBody = document.getElementById('paymentModalBody');
+            modalBody.innerHTML = `
+                <div class="payment-info">
+                    <div class="payment-amount">&#8377;499</div>
+                    <p>Pro Plan - Monthly Subscription</p>
+                    <div class="upi-container">
+                        <p class="upi-label">Pay using UPI to:</p>
+                        <div class="upi-id">
+                            <span id="upiIdText">${upiId}</span>
+                            <button class="copy-btn" onclick="copyUpiId()">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-steps">
+                    <h4>How to complete payment:</h4>
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-text">Open any UPI app (GPay, PhonePe, Paytm, etc.)</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-text">Pay &#8377;499 to the UPI ID shown above</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-text">Take a screenshot of the successful payment</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-text">Upload the screenshot and enter transaction ID below</div>
+                    </div>
+                </div>
+
+                <form id="paymentForm" onsubmit="submitPayment(event)">
+                    <div class="form-group">
+                        <label for="transactionId">Transaction ID / UTR Number</label>
+                        <input type="text" id="transactionId" name="transactionId" placeholder="Enter your transaction ID" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Payment Screenshot</label>
+                        <div class="file-upload" id="fileUpload">
+                            <input type="file" id="screenshotInput" accept="image/*" onchange="handleFileSelect(event)" required>
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click or drag to upload screenshot</p>
+                            <p class="file-name" id="fileName" style="display: none;"></p>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary submit-payment" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i> Submit Payment for Verification
+                    </button>
+                </form>
+            `;
+        }
+
+        // Close payment modal
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.remove('active');
+            selectedFile = null;
+        }
+
+        // Copy UPI ID
+        function copyUpiId() {
+            navigator.clipboard.writeText(upiId).then(() => {
+                showToast('UPI ID copied to clipboard!', 'success');
+            });
+        }
+
+        // Handle file selection
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedFile = file;
+                const fileUpload = document.getElementById('fileUpload');
+                const fileName = document.getElementById('fileName');
+                fileUpload.classList.add('has-file');
+                fileName.textContent = file.name;
+                fileName.style.display = 'block';
+            }
+        }
+
+        // Submit payment
+        async function submitPayment(event) {
+            event.preventDefault();
+
+            const transactionId = document.getElementById('transactionId').value;
+            const screenshotInput = document.getElementById('screenshotInput');
+
+            if (!transactionId || !screenshotInput.files[0]) {
+                showToast('Please fill all fields', 'error');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+            const formData = new FormData();
+            formData.append('transaction_id', transactionId);
+            formData.append('screenshot', screenshotInput.files[0]);
+
+            try {
+                const response = await fetch('/api/subscription/request-upgrade', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast('Payment submitted for verification!', 'success');
+                    // Show pending status
+                    const modalBody = document.getElementById('paymentModalBody');
+                    modalBody.innerHTML = `
+                        <div class="request-status">
+                            <div class="status-icon pending">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <h4 class="status-title">Payment Under Review</h4>
+                            <p class="status-message">Your payment is being verified. This usually takes 24-48 hours. You will be notified once approved.</p>
+                        </div>
+                    `;
+                } else {
+                    showToast(data.message || 'Error submitting payment', 'error');
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Payment for Verification';
+                }
+            } catch (error) {
+                showToast('Error submitting payment', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Payment for Verification';
+            }
+        }
+
+        // Toggle FAQ
+        function toggleFaq(element) {
+            const faqItem = element.parentElement;
+            faqItem.classList.toggle('active');
+        }
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Close modal on outside click
+        document.getElementById('paymentModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePaymentModal();
+            }
+        });
+
+        // Initialize
+        getUpiInfo();
+        checkCurrentPlan();
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "20704f5daa75eee20e876583c63aa90e": {
+    "2026-01": {
+      "documents_uploaded": 1,
+      "pages_processed": 16,
+      "briefs_generated": 0,
+      "analyses_done": 0,
+      "qa_queries": 0
+    }
+  },
+  "d78b67f5bfad624545302405f5c9ba99": {
+    "2026-01": {
+      "documents_uploaded": 5,
+      "pages_processed": 71,
+      "briefs_generated": 2,
+      "analyses_done": 0,
+      "qa_queries": 0
+    }
+  }
+}

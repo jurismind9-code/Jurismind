@@ -1,0 +1,16 @@
+{
+  "48e5deca92000cc6": {
+    "user_id": "d78b67f5bfad624545302405f5c9ba99",
+    "user_name": "Lakshya Aryan",
+    "user_email": "iitbhulakshya1@gmail.com",
+    "user_phone": "9319502967",
+    "transaction_id": "116562397296",
+    "screenshot_path": "d78b67f5bfad624545302405f5c9ba99_20260104_235458.jpeg",
+    "amount": 499,
+    "plan": "pro",
+    "status": "approved",
+    "submitted_at": "2026-01-04T23:54:58.308019",
+    "reviewed_at": "2026-01-05T00:03:23.995375",
+    "reviewed_by": "admin"
+  }
+}

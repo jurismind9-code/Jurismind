@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python app.py:*)",
+      "Bash(pip install:*)",
+      "Bash(where:*)",
+      "Bash(dir \"C:\\\\Program Files\\\\Tesseract-OCR\\\\tesseract.exe\")",
+      "Bash(dir \"C:\\\\Program Files \\(x86\\)\\\\Tesseract-OCR\\\\tesseract.exe\")",
+      "Bash(winget install:*)",
+      "Bash(timeout /t 5)",
+      "Bash(python:*)",
+      "Bash(cat:*)",
+      "Bash(powershell -Command \"Get-Content ''C:\\\\Users\\\\AM\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--HCLTECH\\\\tasks\\\\bea8136.output'' -First 30\")",
+      "Bash(powershell -Command \"Get-Content ''C:\\\\Users\\\\AM\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--HCLTECH\\\\tasks\\\\b4d6663.output'' -First 30\")",
+      "Bash(powershell -Command:*)",
+      "Bash(taskkill:*)",
+      "Bash(timeout /t)",
+      "Bash(dir:*)",
+      "Bash(timeout /t 3)",
+      "Bash(findstr:*)"
+    ]
+  }
+}

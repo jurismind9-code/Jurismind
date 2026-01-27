@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - JurisMind AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #667eea;
+            --primary-dark: #5a67d8;
+            --primary-light: #a3bffa;
+            --secondary: #764ba2;
+            --dark: #1a202c;
+            --gray: #718096;
+            --gray-light: #e2e8f0;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-light: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        /* Login Page */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header .logo {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header .logo span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-header p {
+            color: var(--gray);
+        }
+
+        .admin-badge {
+            display: inline-block;
+            background: var(--gradient);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .navbar .logo span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .navbar .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logout-btn {
+            background: var(--gray-light);
+            color: var(--gray);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .dashboard-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card .icon.pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .stat-card .icon.approved {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .stat-card .icon.rejected {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .stat-card .icon.total {
+            background: var(--gradient-light);
+            color: var(--primary);
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .stat-card .label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .requests-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .filter-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .filter-tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gray);
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .filter-tab:hover {
+            background: var(--gradient-light);
+        }
+
+        .filter-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .requests-list {
+            padding: 1.5rem;
+        }
+
+        .request-card {
+            border: 1px solid var(--gray-light);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        .request-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+        }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .user-info h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-badge.pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: #B45309;
+        }
+
+        .status-badge.approved {
+            background: rgba(16, 185, 129, 0.2);
+            color: #047857;
+        }
+
+        .status-badge.rejected {
+            background: rgba(239, 68, 68, 0.2);
+            color: #B91C1C;
+        }
+
+        .request-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--gradient-light);
+            border-radius: 12px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .detail-item .label {
+            font-size: 0.75rem;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-item .value {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .screenshot-preview {
+            margin-bottom: 1rem;
+        }
+
+        .screenshot-preview img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 12px;
+            border: 1px solid var(--gray-light);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .screenshot-preview img:hover {
+            transform: scale(1.02);
+        }
+
+        .request-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .rejection-input {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .rejection-input.active {
+            display: block;
+        }
+
+        .rejection-input textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 8px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .rejection-input textarea:focus {
+            outline: none;
+            border-color: var(--danger);
+        }
+
+        .rejection-input .btn {
+            margin-top: 0.5rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Modal for screenshot */
+        .image-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .image-modal.active {
+            display: flex;
+        }
+
+        .image-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 12px;
+        }
+
+        .image-modal .close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 10000;
+        }
+
+        .toast {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            animation: toastSlide 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .toast.success {
+            background: var(--success);
+            color: white;
+        }
+
+        .toast.error {
+            background: var(--danger);
+            color: white;
+        }
+
+        @keyframes toastSlide {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-content {
+                padding: 1rem;
+            }
+
+            .request-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .request-actions {
+                flex-direction: column;
+            }
+
+            .request-actions .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div class="login-container" id="loginPage">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo">Juris<span>Mind</span> AI</div>
+                <div class="admin-badge"><i class="fas fa-shield-alt"></i> Admin Panel</div>
+                <p style="margin-top: 1rem;">Sign in to manage payment requests</p>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="email">Admin Email</label>
+                    <input type="email" id="email" placeholder="Enter admin email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboardPage">
+        <nav class="navbar">
+            <div class="logo">Juris<span>Mind</span> AI <span class="admin-badge">Admin</span></div>
+            <div class="admin-info">
+                <span id="adminEmail"></span>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </nav>
+
+        <div class="dashboard-content">
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="icon pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="value" id="pendingCount">0</div>
+                    <div class="label">Pending Requests</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon approved">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div class="value" id="approvedCount">0</div>
+                    <div class="label">Approved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon rejected">
+                        <i class="fas fa-times"></i>
+                    </div>
+                    <div class="value" id="rejectedCount">0</div>
+                    <div class="label">Rejected</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon total">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <div class="value" id="totalCount">0</div>
+                    <div class="label">Total Requests</div>
+                </div>
+            </div>
+
+            <!-- Payment Requests -->
+            <h2 class="section-title"><i class="fas fa-credit-card"></i> Payment Requests</h2>
+
+            <div class="requests-container">
+                <div class="filter-tabs">
+                    <div class="filter-tab active" data-filter="all" onclick="filterRequests('all')">All</div>
+                    <div class="filter-tab" data-filter="pending" onclick="filterRequests('pending')">Pending</div>
+                    <div class="filter-tab" data-filter="approved" onclick="filterRequests('approved')">Approved</div>
+                    <div class="filter-tab" data-filter="rejected" onclick="filterRequests('rejected')">Rejected</div>
+                </div>
+
+                <div class="requests-list" id="requestsList">
+                    <!-- Requests will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div class="image-modal" id="imageModal" onclick="closeImageModal()">
+        <span class="close">&times;</span>
+        <img src="" alt="Screenshot" id="modalImage">
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        let allRequests = [];
+        let currentFilter = 'all';
+
+        // Check if already logged in
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/admin/pending-requests');
+                const data = await response.json();
+
+                if (data.success) {
+                    showDashboard();
+                    loadRequests();
+                }
+            } catch (error) {
+                // Not logged in
+            }
+        }
+
+        // Handle login
+        async function handleLogin(event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast('Login successful!', 'success');
+                    showDashboard();
+                    loadRequests();
+                } else {
+                    showToast(data.message || 'Login failed', 'error');
+                }
+            } catch (error) {
+                showToast('Error logging in', 'error');
+            }
+
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Sign In';
+        }
+
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('dashboardPage').style.display = 'block';
+            document.getElementById('adminEmail').textContent = 'iitbhulakshya1@gmail.com';
+        }
+
+        // Logout
+        async function logout() {
+            try {
+                await fetch('/api/admin/logout', { method: 'POST' });
+            } catch (error) {
+                // Ignore
+            }
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('dashboardPage').style.display = 'none';
+            showToast('Logged out successfully', 'success');
+        }
+
+        // Load requests
+        async function loadRequests() {
+            try {
+                const response = await fetch('/api/admin/pending-requests');
+                const data = await response.json();
+
+                if (data.success) {
+                    allRequests = data.requests;
+                    updateStats();
+                    renderRequests();
+                }
+            } catch (error) {
+                showToast('Error loading requests', 'error');
+            }
+        }
+
+        // Update stats
+        function updateStats() {
+            const pending = allRequests.filter(r => r.status === 'pending').length;
+            const approved = allRequests.filter(r => r.status === 'approved').length;
+            const rejected = allRequests.filter(r => r.status === 'rejected').length;
+
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('approvedCount').textContent = approved;
+            document.getElementById('rejectedCount').textContent = rejected;
+            document.getElementById('totalCount').textContent = allRequests.length;
+        }
+
+        // Filter requests
+        function filterRequests(filter) {
+            currentFilter = filter;
+
+            // Update tabs
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.filter === filter) {
+                    tab.classList.add('active');
+                }
+            });
+
+            renderRequests();
+        }
+
+        // Render requests
+        function renderRequests() {
+            const container = document.getElementById('requestsList');
+            let requests = allRequests;
+
+            if (currentFilter !== 'all') {
+                requests = allRequests.filter(r => r.status === currentFilter);
+            }
+
+            if (requests.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No requests found</h3>
+                        <p>There are no ${currentFilter === 'all' ? '' : currentFilter} payment requests.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = requests.map(request => `
+                <div class="request-card" id="request-${request.request_id}">
+                    <div class="request-header">
+                        <div class="user-info">
+                            <h4>${request.user_email}</h4>
+                            <p>Request ID: ${request.request_id}</p>
+                        </div>
+                        <span class="status-badge ${request.status}">${request.status}</span>
+                    </div>
+
+                    <div class="request-details">
+                        <div class="detail-item">
+                            <span class="label">Transaction ID</span>
+                            <span class="value">${request.transaction_id}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Amount</span>
+                            <span class="value">&#8377;${request.amount || 499}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Submitted</span>
+                            <span class="value">${formatDate(request.submitted_at)}</span>
+                        </div>
+                        ${request.reviewed_at ? `
+                        <div class="detail-item">
+                            <span class="label">Reviewed</span>
+                            <span class="value">${formatDate(request.reviewed_at)}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="screenshot-preview">
+                        <img src="/api/admin/screenshot/${request.screenshot_path}" alt="Payment Screenshot" onclick="openImageModal('/api/admin/screenshot/${request.screenshot_path}')">
+                    </div>
+
+                    ${request.status === 'pending' ? `
+                    <div class="request-actions">
+                        <button class="btn btn-success btn-sm" onclick="approveRequest('${request.request_id}')">
+                            <i class="fas fa-check"></i> Approve
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="showRejectionInput('${request.request_id}')">
+                            <i class="fas fa-times"></i> Reject
+                        </button>
+                    </div>
+                    <div class="rejection-input" id="rejection-${request.request_id}">
+                        <textarea id="reason-${request.request_id}" placeholder="Enter rejection reason..."></textarea>
+                        <button class="btn btn-danger btn-sm" onclick="rejectRequest('${request.request_id}')">
+                            <i class="fas fa-paper-plane"></i> Submit Rejection
+                        </button>
+                    </div>
+                    ` : ''}
+
+                    ${request.status === 'rejected' && request.rejection_reason ? `
+                    <div style="background: rgba(239, 68, 68, 0.1); padding: 0.75rem; border-radius: 8px; color: #B91C1C;">
+                        <strong>Rejection Reason:</strong> ${request.rejection_reason}
+                    </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // Show rejection input
+        function showRejectionInput(requestId) {
+            document.getElementById(`rejection-${requestId}`).classList.add('active');
+        }
+
+        // Approve request
+        async function approveRequest(requestId) {
+            if (!confirm('Are you sure you want to approve this payment?')) return;
+
+            try {
+                const response = await fetch('/api/admin/approve-request', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ request_id: requestId })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast('Payment approved successfully!', 'success');
+                    loadRequests();
+                } else {
+                    showToast(data.message || 'Error approving payment', 'error');
+                }
+            } catch (error) {
+                showToast('Error approving payment', 'error');
+            }
+        }
+
+        // Reject request
+        async function rejectRequest(requestId) {
+            const reason = document.getElementById(`reason-${requestId}`).value;
+
+            if (!reason.trim()) {
+                showToast('Please enter a rejection reason', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/reject-request', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ request_id: requestId, reason: reason })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast('Payment rejected', 'success');
+                    loadRequests();
+                } else {
+                    showToast(data.message || 'Error rejecting payment', 'error');
+                }
+            } catch (error) {
+                showToast('Error rejecting payment', 'error');
+            }
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-IN', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Open image modal
+        function openImageModal(src) {
+            document.getElementById('modalImage').src = src;
+            document.getElementById('imageModal').classList.add('active');
+        }
+
+        // Close image modal
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Initialize
+        checkAuth();
+    </script>
+</body>
+</html>

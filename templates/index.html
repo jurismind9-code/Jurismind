@@ -1,0 +1,4354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JurisMind AI - Intelligent Legal Document Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #E91E63;
+            --primary-dark: #C2185B;
+            --primary-light: #F8BBD9;
+            --secondary: #9C27B0;
+            --accent: #FF4081;
+            --dark: #1a1a2e;
+            --darker: #0f0f1a;
+            --light: #ffffff;
+            --gray: #6b7280;
+            --gray-light: #f3f4f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --gradient: linear-gradient(135deg, #E91E63 0%, #9C27B0 100%);
+            --gradient-light: linear-gradient(135deg, rgba(233, 30, 99, 0.1) 0%, rgba(156, 39, 176, 0.1) 100%);
+            --glass: rgba(255, 255, 255, 0.95);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-animation .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--gradient);
+            opacity: 0.03;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .bg-animation .circle:nth-child(1) {
+            width: 600px;
+            height: 600px;
+            top: -300px;
+            right: -200px;
+        }
+
+        .bg-animation .circle:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            bottom: -200px;
+            left: -100px;
+            animation-delay: -5s;
+        }
+
+        .bg-animation .circle:nth-child(3) {
+            width: 300px;
+            height: 300px;
+            top: 50%;
+            left: 50%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.05); }
+            66% { transform: translate(-20px, 20px) scale(0.95); }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 0.75rem 5%;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .logo-text span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gray);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* User Menu Styles */
+        .user-menu {
+            position: relative;
+        }
+
+        .user-menu-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-menu-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(233, 30, 99, 0.3);
+        }
+
+        .user-menu-btn i:first-child {
+            font-size: 1.2rem;
+        }
+
+        .user-menu-btn i:last-child {
+            font-size: 0.75rem;
+            transition: transform 0.3s ease;
+        }
+
+        .user-menu.active .user-menu-btn i:last-child {
+            transform: rotate(180deg);
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            min-width: 250px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .user-menu.active .user-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px;
+            background: var(--gradient-light);
+        }
+
+        .user-info i {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .user-email {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .plan-info {
+            padding: 12px 20px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .plan-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .plan-badge.free {
+            background: #e2e8f0;
+            color: #64748b;
+        }
+
+        .plan-badge.pro {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .plan-badge.enterprise {
+            background: #1a202c;
+            color: white;
+        }
+
+        .usage-info {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .upgrade-btn-dropdown {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: var(--gradient);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .upgrade-btn-dropdown:hover {
+            opacity: 0.9;
+        }
+
+        .upgrade-btn-dropdown.hidden {
+            display: none;
+        }
+
+        .nav-pricing {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 20px;
+            border: none;
+            background: none;
+            color: #f44336;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #ffebee;
+        }
+
+        .logout-btn i {
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(233, 30, 99, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 120px 5% 80px;
+            position: relative;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .hero-text {
+            z-index: 10;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--gradient-light);
+            border: 1px solid rgba(233, 30, 99, 0.2);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            animation: fadeInUp 0.8s ease 0.1s both;
+        }
+
+        .hero-title .gradient-text {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+            max-width: 500px;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 0.3s both;
+        }
+
+        .hero-visual {
+            position: relative;
+            z-index: 10;
+            animation: fadeInRight 1s ease 0.3s both;
+        }
+
+        .hero-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-light);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+
+        .card-title {
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .card-subtitle {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .chat-preview {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chat-message {
+            padding: 1rem 1.25rem;
+            border-radius: 16px;
+            font-size: 0.95rem;
+        }
+
+        .chat-message.user {
+            background: var(--gradient);
+            color: white;
+            margin-left: 20%;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-message.ai {
+            background: var(--gray-light);
+            color: var(--dark);
+            margin-right: 20%;
+            border-bottom-left-radius: 4px;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Main App Section */
+        .app-section {
+            padding: 80px 5%;
+            background: linear-gradient(180deg, var(--gray-light) 0%, white 100%);
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: var(--gradient-light);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* App Container */
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Setup Card */
+        .setup-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .setup-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .setup-grid-single {
+            display: block;
+            width: 100%;
+        }
+
+        .setup-grid-single .upload-section {
+            max-width: 100%;
+        }
+
+        .api-section h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .api-status-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+        }
+
+        .api-status-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .api-status-text strong {
+            display: block;
+            color: var(--dark);
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .api-status-text p {
+            color: var(--gray);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.1);
+        }
+
+        /* Upload Tabs */
+        .upload-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            background: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: var(--gray);
+        }
+
+        .upload-tab:hover {
+            border-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .upload-tab.active {
+            background: var(--gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .upload-zone {
+            border: 2px dashed var(--primary-light);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--gradient-light);
+        }
+
+        .upload-zone:hover, .upload-zone.dragover {
+            border-color: var(--primary);
+            background: rgba(233, 30, 99, 0.08);
+        }
+
+        .upload-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-hint {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        .url-zone {
+            padding: 1.5rem;
+            background: var(--gradient-light);
+            border-radius: 16px;
+        }
+
+        /* Sources List */
+        .sources-section {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--gray-light);
+            border-radius: 12px;
+        }
+
+        .sources-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .sources-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .clear-btn {
+            padding: 0.4rem 0.8rem;
+            background: #fee2e2;
+            color: #dc2626;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .clear-btn:hover {
+            background: #dc2626;
+            color: white;
+        }
+
+        .sources-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .source-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid var(--primary-light);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--primary);
+        }
+
+        /* Results Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* Result Card */
+        .result-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+        }
+
+        .result-header {
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .result-header.brief {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .result-header.analysis {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .result-header.history {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        /* History Section */
+        .history-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .history-item:hover {
+            background: var(--gradient-light);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .history-details {
+            flex: 1;
+        }
+
+        .history-name {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .history-meta {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .history-btn {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .history-btn.view {
+            background: var(--gradient-light);
+            color: var(--primary);
+        }
+
+        .history-btn.view:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .history-empty {
+            text-align: center;
+            padding: 2rem;
+            color: var(--gray);
+        }
+
+        .history-empty i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .pro-badge-small {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        /* Enhanced History Styles */
+        .history-item {
+            flex-direction: column;
+            align-items: stretch;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .history-item.has-content {
+            border-left: 3px solid var(--primary);
+        }
+
+        .history-item.has-content:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+        }
+
+        .history-item-header {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .history-expand-btn {
+            background: var(--gradient-light);
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 0.6rem;
+            border-radius: 50%;
+            transition: all 0.3s;
+            margin-left: auto;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .history-expand-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .history-expand-btn i {
+            transition: transform 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .history-item.expanded .history-expand-btn i {
+            transform: rotate(180deg);
+        }
+
+        .history-item.expanded {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        }
+
+        .history-expanded-content {
+            display: none;
+            width: 100%;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-light);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 1000px;
+            }
+        }
+
+        .history-item.expanded .history-expanded-content {
+            display: block;
+        }
+
+        .history-section {
+            margin-bottom: 1rem;
+        }
+
+        .history-no-data {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--gray);
+            background: var(--gradient-light);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .history-no-data i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+            opacity: 0.5;
+        }
+
+        .history-section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .history-section-title i {
+            font-size: 0.9rem;
+        }
+
+        .history-brief-preview {
+            background: var(--gradient-light);
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 0.85rem;
+            color: var(--dark);
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        .history-brief-preview h2, .history-brief-preview h3 {
+            font-size: 0.95rem;
+            margin: 0.5rem 0;
+            color: var(--primary);
+        }
+
+        .history-qa-list {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .history-qa-item {
+            background: var(--gradient-light);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .history-qa-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .history-qa-question {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .history-qa-question i {
+            color: var(--secondary);
+            margin-top: 0.15rem;
+        }
+
+        .history-qa-answer {
+            font-size: 0.8rem;
+            color: var(--dark);
+            padding-left: 1.25rem;
+            line-height: 1.5;
+        }
+
+        .history-qa-time {
+            font-size: 0.7rem;
+            color: var(--gray);
+            padding-left: 1.25rem;
+            margin-top: 0.25rem;
+        }
+
+        .history-no-content {
+            text-align: center;
+            padding: 1rem;
+            color: var(--gray);
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        .history-badges {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .history-badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .history-badge.brief {
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
+        }
+
+        .history-badge.qa {
+            background: rgba(56, 239, 125, 0.15);
+            color: #11998e;
+        }
+
+        .view-full-brief-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .view-full-brief-btn:hover {
+            background: var(--secondary);
+        }
+
+        .result-header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .result-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .result-title {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .result-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.85rem;
+        }
+
+        .generate-btn {
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .generate-btn:hover:not(:disabled) {
+            background: white;
+            color: var(--primary);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .result-content {
+            padding: 2rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .result-placeholder {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+        }
+
+        .result-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .result-placeholder p {
+            font-size: 1rem;
+        }
+
+        .result-output {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--dark);
+        }
+
+        .result-output strong {
+            color: var(--primary);
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            border-top: 1px solid var(--gray-light);
+            background: #f8fafc;
+        }
+
+        .export-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.25rem;
+            border: 1px solid var(--gray-light);
+            border-radius: 8px;
+            background: white;
+            color: var(--dark);
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .export-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--gradient-light);
+        }
+
+        .export-btn i {
+            font-size: 1rem;
+        }
+
+        .export-btn .fa-file-pdf {
+            color: #e53e3e;
+        }
+
+        .export-btn .fa-file-word {
+            color: #2b6cb0;
+        }
+
+        .pro-badge-small {
+            display: inline-block;
+            padding: 2px 6px;
+            background: var(--gradient);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+
+        .result-output ul, .result-output ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .result-output li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Floating Chatbot */
+        .chatbot-trigger {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(233, 30, 99, 0.4);
+            z-index: 9998;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+        }
+
+        .chatbot-trigger:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 50px rgba(233, 30, 99, 0.5);
+        }
+
+        .chatbot-trigger i {
+            font-size: 1.75rem;
+            color: white;
+            transition: transform 0.3s;
+        }
+
+        .chatbot-trigger.active i {
+            transform: rotate(90deg);
+        }
+
+        .chatbot-trigger .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 24px;
+            height: 24px;
+            background: #ef4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Chatbot Popup */
+        .chatbot-popup {
+            position: fixed;
+            bottom: 120px;
+            right: 30px;
+            width: 420px;
+            height: 600px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scale(0) translateY(20px);
+            transform-origin: bottom right;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .chatbot-popup.active {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .chatbot-header {
+            background: var(--gradient);
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chatbot-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chatbot-avatar {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: white;
+        }
+
+        .chatbot-info h4 {
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .chatbot-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.8rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .chatbot-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chatbot-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            background: #fafafa;
+        }
+
+        .chat-msg {
+            max-width: 85%;
+            padding: 1rem 1.25rem;
+            border-radius: 18px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            animation: msgSlide 0.3s ease;
+        }
+
+        @keyframes msgSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chat-msg.user {
+            background: var(--gradient);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-msg.ai {
+            background: white;
+            color: var(--dark);
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .chat-msg.ai code {
+            background: var(--gray-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 1rem;
+            background: white;
+            border-radius: 18px;
+            width: fit-content;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); opacity: 0.5; }
+            50% { transform: translateY(-5px); opacity: 1; }
+        }
+
+        .chatbot-input {
+            padding: 1rem 1.5rem;
+            background: white;
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 1rem 1.25rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .chatbot-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .chatbot-send {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chatbot-send:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(233, 30, 99, 0.3);
+        }
+
+        .chatbot-send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Voice Input Button */
+        .voice-input-btn {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .voice-input-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .voice-input-btn.recording {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            animation: pulse-recording 1.5s ease-in-out infinite;
+        }
+
+        .voice-input-btn.recording::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.3);
+            animation: ripple 1.5s ease-out infinite;
+        }
+
+        @keyframes pulse-recording {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.8); opacity: 0; }
+        }
+
+        .voice-input-btn.locked {
+            background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+            cursor: pointer;
+        }
+
+        .voice-input-btn.locked:hover {
+            transform: scale(1.05);
+        }
+
+        .voice-input-btn.locked::after {
+            content: '\f023';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            font-size: 0.6rem;
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            background: #fbbf24;
+            color: #92400e;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Voice Recording Overlay */
+        .voice-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .voice-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .voice-overlay-content {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .voice-overlay-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            animation: pulse-recording 1.5s ease-in-out infinite;
+            position: relative;
+        }
+
+        .voice-overlay-icon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.3);
+            animation: ripple 1.5s ease-out infinite;
+        }
+
+        .voice-overlay-icon i {
+            font-size: 2.5rem;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .voice-overlay h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .voice-overlay p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .voice-transcript {
+            background: var(--gray-light);
+            border-radius: 12px;
+            padding: 1rem;
+            min-height: 60px;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            color: var(--dark);
+        }
+
+        .voice-transcript:empty::before {
+            content: 'Listening...';
+            color: var(--gray);
+        }
+
+        .voice-overlay-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .voice-overlay-actions button {
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .voice-cancel-btn {
+            background: var(--gray-light);
+            color: var(--dark);
+        }
+
+        .voice-cancel-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .voice-send-btn {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .voice-send-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(233, 30, 99, 0.3);
+        }
+
+        /* Pro Upgrade Modal for Voice */
+        .voice-pro-modal {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .voice-pro-modal .pro-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .voice-pro-modal .pro-icon i {
+            font-size: 2rem;
+            color: white;
+        }
+
+        .voice-pro-modal h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .voice-pro-modal p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .voice-pro-features {
+            text-align: left;
+            background: var(--gray-light);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .voice-pro-features li {
+            padding: 0.5rem 0;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .voice-pro-features li i {
+            color: #10b981;
+        }
+
+        .voice-pro-modal .upgrade-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-bottom: 0.75rem;
+        }
+
+        .voice-pro-modal .upgrade-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(233, 30, 99, 0.3);
+        }
+
+        .voice-pro-modal .close-btn {
+            background: transparent;
+            color: var(--gray);
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .voice-pro-modal .close-btn:hover {
+            color: var(--dark);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-action {
+            padding: 0.5rem 1rem;
+            background: var(--gradient-light);
+            border: 1px solid var(--primary-light);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .quick-action:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Language Selector for Chat */
+        .language-selector-chat {
+            padding: 0.5rem 1.5rem;
+            background: #f8f9fa;
+            border-top: 1px solid var(--gray-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .language-selector-chat label {
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .language-selector-chat select {
+            padding: 0.35rem 0.75rem;
+            border: 1px solid var(--gray-light);
+            border-radius: 8px;
+            background: white;
+            color: var(--dark);
+            font-size: 0.8rem;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .language-selector-chat select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Language Selector for Brief */
+        .result-header-right {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .language-select-brief {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--gray-light);
+            border-radius: 10px;
+            background: white;
+            color: var(--dark);
+            font-size: 0.85rem;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .language-select-brief:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .language-select-brief:hover {
+            border-color: var(--primary-light);
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 10000;
+        }
+
+        .toast {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            animation: toastSlide 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .toast.success {
+            background: var(--success);
+            color: white;
+        }
+
+        .toast.error {
+            background: #ef4444;
+            color: white;
+        }
+
+        @keyframes toastSlide {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--darker);
+            color: white;
+            padding: 60px 5% 30px;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .footer-logo span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-text {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 2rem;
+        }
+
+        .footer-developer {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-developer p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.3rem;
+        }
+
+        .footer-developer a {
+            color: var(--primary-light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-developer a:hover {
+            color: white;
+        }
+
+        .developer-title {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5) !important;
+            margin-bottom: 1rem !important;
+        }
+
+        .developer-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 0.75rem;
+        }
+
+        .developer-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .developer-links a:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        /* Spinner */
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .spinner-dark {
+            border-color: rgba(0, 0, 0, 0.1);
+            border-top-color: var(--primary);
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-content, .setup-grid, .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content {
+                text-align: center;
+            }
+
+            .hero-subtitle {
+                margin: 0 auto 2rem;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero-visual {
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .chatbot-popup {
+                width: calc(100% - 20px);
+                right: 10px;
+                bottom: 100px;
+                height: 70vh;
+            }
+
+            .chatbot-trigger {
+                right: 20px;
+                bottom: 20px;
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Sound wave animation for chatbot */
+        .sound-wave {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 20px;
+        }
+
+        .sound-wave span {
+            width: 3px;
+            background: var(--primary);
+            border-radius: 3px;
+            animation: soundWave 0.5s infinite ease-in-out;
+        }
+
+        .sound-wave span:nth-child(1) { height: 8px; animation-delay: 0s; }
+        .sound-wave span:nth-child(2) { height: 16px; animation-delay: 0.1s; }
+        .sound-wave span:nth-child(3) { height: 12px; animation-delay: 0.2s; }
+        .sound-wave span:nth-child(4) { height: 20px; animation-delay: 0.3s; }
+        .sound-wave span:nth-child(5) { height: 8px; animation-delay: 0.4s; }
+
+        @keyframes soundWave {
+            0%, 100% { transform: scaleY(0.5); }
+            50% { transform: scaleY(1); }
+        }
+
+        /* ==================== GAMIFICATION STYLES ==================== */
+        .gamification-dashboard {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .gamification-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .gamification-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .gamification-title i {
+            font-size: 1.5rem;
+        }
+
+        .gamification-title h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .gamification-title span {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .gamification-toggle {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .gamification-toggle:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .gamification-content {
+            padding: 1.5rem 2rem;
+        }
+
+        /* Daily Tip Card */
+        .daily-tip-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .daily-tip-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .daily-tip-icon {
+            width: 40px;
+            height: 40px;
+            background: #f59e0b;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .daily-tip-label {
+            font-size: 0.75rem;
+            color: #92400e;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .daily-tip-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #78350f;
+        }
+
+        .daily-tip-content {
+            font-size: 0.9rem;
+            color: #92400e;
+            line-height: 1.6;
+        }
+
+        .daily-tip-category {
+            display: inline-block;
+            margin-top: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(245, 158, 11, 0.2);
+            border-radius: 50px;
+            font-size: 0.75rem;
+            color: #92400e;
+            font-weight: 600;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--gradient-light);
+            border-radius: 16px;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.3s;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.75rem;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--dark);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 0.25rem;
+        }
+
+        /* Achievements Section */
+        .achievements-section {
+            margin-top: 1.5rem;
+        }
+
+        .achievements-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .achievements-header h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .achievements-count {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+
+        .achievement-card {
+            background: white;
+            border: 2px solid var(--gray-light);
+            border-radius: 14px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .achievement-card.unlocked {
+            border-color: transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(135deg, #10b981 0%, #059669 100%) border-box;
+            border: 2px solid transparent;
+        }
+
+        .achievement-card.unlocked::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+
+        .achievement-card:not(.unlocked) {
+            opacity: 0.7;
+        }
+
+        .achievement-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .achievement-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.75rem;
+            font-size: 1.25rem;
+            color: white;
+        }
+
+        .achievement-card:not(.unlocked) .achievement-icon {
+            background: var(--gray-light) !important;
+            color: var(--gray);
+        }
+
+        .achievement-name {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .achievement-desc {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .achievement-progress {
+            height: 6px;
+            background: var(--gray-light);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .achievement-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #059669);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .achievement-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+        }
+
+        /* Achievement Unlock Notification */
+        .achievement-notification {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .achievement-notification.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .achievement-notification-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            animation: achievementPulse 1s infinite;
+        }
+
+        @keyframes achievementPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .achievement-notification-content h3 {
+            font-size: 0.85rem;
+            color: #10b981;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .achievement-notification-content h4 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin: 0.25rem 0;
+        }
+
+        .achievement-notification-content p {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* Time Saved Card */
+        .time-saved-card {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-radius: 16px;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .time-saved-icon {
+            width: 50px;
+            height: 50px;
+            background: #3b82f6;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .time-saved-content h4 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1e40af;
+        }
+
+        .time-saved-content p {
+            font-size: 0.85rem;
+            color: #3730a3;
+        }
+
+        /* Gamification collapsed state */
+        .gamification-dashboard.collapsed .gamification-content {
+            display: none;
+        }
+
+        .gamification-dashboard.collapsed .gamification-header {
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Voice Recording Overlay -->
+    <div class="voice-overlay" id="voiceOverlay">
+        <div class="voice-overlay-content">
+            <div class="voice-overlay-icon">
+                <i class="fas fa-microphone"></i>
+            </div>
+            <h3>Listening...</h3>
+            <p>Speak your question clearly</p>
+            <div class="voice-transcript" id="voiceTranscript"></div>
+            <div class="voice-overlay-actions">
+                <button class="voice-cancel-btn" onclick="cancelVoiceInput()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="voice-send-btn" onclick="sendVoiceInput()">
+                    <i class="fas fa-paper-plane"></i> Send
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voice Pro Upgrade Modal -->
+    <div class="voice-overlay" id="voiceProModal">
+        <div class="voice-pro-modal">
+            <div class="pro-icon">
+                <i class="fas fa-microphone"></i>
+            </div>
+            <h3>Voice Input is a Pro Feature</h3>
+            <p>Upgrade to Pro to ask questions using your voice - faster, easier, and hands-free!</p>
+            <ul class="voice-pro-features">
+                <li><i class="fas fa-check"></i> Voice input in English & Hindi</li>
+                <li><i class="fas fa-check"></i> Real-time speech recognition</li>
+                <li><i class="fas fa-check"></i> Hands-free document analysis</li>
+                <li><i class="fas fa-check"></i> Plus all other Pro features</li>
+            </ul>
+            <button class="upgrade-btn" onclick="openSubscriptionFromVoice()">
+                <i class="fas fa-crown"></i> Upgrade to Pro
+            </button>
+            <button class="close-btn" onclick="closeVoiceProModal()">Maybe Later</button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-balance-scale"></i>
+            </div>
+            <span class="logo-text">Juris<span>Mind</span> AI</span>
+        </a>
+        <div class="nav-links">
+            <a href="#app">Dashboard</a>
+            <a href="#brief-section">Case Brief</a>
+            <a href="#analysis-section">Analysis</a>
+            <a href="/pricing" class="nav-pricing">Pricing</a>
+            <div class="user-menu" id="userMenu">
+                <button class="user-menu-btn" id="userMenuBtn" onclick="toggleUserMenu()">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="userNameDisplay">User</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="user-dropdown" id="userDropdown">
+                    <div class="user-info">
+                        <i class="fas fa-user"></i>
+                        <div>
+                            <div class="user-name" id="dropdownUserName">User Name</div>
+                            <div class="user-email" id="dropdownUserEmail">user@email.com</div>
+                        </div>
+                    </div>
+                    <div class="plan-info" id="planInfo">
+                        <div class="plan-badge free" id="planBadge">Free Plan</div>
+                        <div class="usage-info" id="usageInfo">0/10 documents</div>
+                    </div>
+                    <a href="/pricing" class="upgrade-btn-dropdown" id="upgradeBtn">
+                        <i class="fas fa-arrow-up"></i>
+                        Upgrade to Pro
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="hero-badge">
+                    <i class="fas fa-sparkles"></i>
+                    AI-Powered Legal Intelligence
+                </div>
+                <h1 class="hero-title">
+                    Transform Legal Research with
+                    <span class="gradient-text">Intelligent AI</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Upload legal documents, get instant analysis, generate case briefs, and chat with your documents using advanced AI technology.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#app" class="btn btn-primary">
+                        <i class="fas fa-rocket"></i>
+                        Start Free Analysis
+                    </a>
+                    <a href="#brief-section" class="btn btn-outline">
+                        <i class="fas fa-play-circle"></i>
+                        See Features
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-card">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div>
+                            <div class="card-title">JurisMind AI Assistant</div>
+                            <div class="card-subtitle">Online - Ready to help</div>
+                        </div>
+                    </div>
+                    <div class="chat-preview">
+                        <div class="chat-message user">
+                            What are the key holdings in this case?
+                        </div>
+                        <div class="chat-message ai">
+                            Based on my analysis, the court held that: 1) The contract was valid and enforceable, 2) The defendant breached the implied covenant...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Achievement Notification -->
+    <div class="achievement-notification" id="achievementNotification">
+        <div class="achievement-notification-icon" id="achievementNotifIcon">
+            <i class="fas fa-trophy"></i>
+        </div>
+        <div class="achievement-notification-content">
+            <h3>Achievement Unlocked!</h3>
+            <h4 id="achievementNotifName">First Steps</h4>
+            <p id="achievementNotifDesc">Upload your first document</p>
+        </div>
+    </div>
+
+    <!-- Main App Section -->
+    <section class="app-section" id="app">
+        <div class="section-header">
+            <div class="section-badge">Dashboard</div>
+            <h2 class="section-title">Upload Documents</h2>
+            <p class="section-subtitle">Upload your legal documents to get started with AI-powered analysis</p>
+        </div>
+
+        <!-- Gamification Dashboard -->
+        <div class="gamification-dashboard" id="gamificationDashboard">
+            <div class="gamification-header">
+                <div class="gamification-title">
+                    <i class="fas fa-chart-line"></i>
+                    <div>
+                        <h3>Your Progress</h3>
+                        <span id="memberSince">Member since January 2025</span>
+                    </div>
+                </div>
+                <button class="gamification-toggle" onclick="toggleGamification()">
+                    <i class="fas fa-chevron-up" id="gamificationToggleIcon"></i>
+                </button>
+            </div>
+            <div class="gamification-content">
+                <!-- Daily Legal Tip -->
+                <div class="daily-tip-card" id="dailyTipCard">
+                    <div class="daily-tip-header">
+                        <div class="daily-tip-icon">
+                            <i class="fas fa-lightbulb" id="dailyTipIcon"></i>
+                        </div>
+                        <div>
+                            <div class="daily-tip-label">Daily Legal Tip</div>
+                            <div class="daily-tip-title" id="dailyTipTitle">Loading...</div>
+                        </div>
+                    </div>
+                    <div class="daily-tip-content" id="dailyTipContent">
+                        Loading today's tip...
+                    </div>
+                    <span class="daily-tip-category" id="dailyTipCategory">Legal</span>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-upload"></i>
+                        </div>
+                        <div class="stat-value" id="statDocs">0</div>
+                        <div class="stat-label">Documents</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-value" id="statBriefs">0</div>
+                        <div class="stat-label">Briefs Generated</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="stat-value" id="statQuestions">0</div>
+                        <div class="stat-label">Questions Asked</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);">
+                            <i class="fas fa-file-invoice"></i>
+                        </div>
+                        <div class="stat-value" id="statPages">0</div>
+                        <div class="stat-label">Pages Processed</div>
+                    </div>
+                </div>
+
+                <!-- Time Saved Card -->
+                <div class="time-saved-card">
+                    <div class="time-saved-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="time-saved-content">
+                        <h4 id="timeSavedValue">0m</h4>
+                        <p>Estimated time saved with JurisMind AI</p>
+                    </div>
+                </div>
+
+                <!-- Achievements Section -->
+                <div class="achievements-section">
+                    <div class="achievements-header">
+                        <h4><i class="fas fa-trophy"></i> Achievements</h4>
+                        <span class="achievements-count" id="achievementsCount">0/14 Unlocked</span>
+                    </div>
+                    <div class="achievements-grid" id="achievementsGrid">
+                        <!-- Achievements will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="app-container">
+            <!-- Setup Card -->
+            <div class="setup-card">
+                <div class="setup-grid-single">
+                    <input type="hidden" id="apiKey" value="configured">
+                    <!-- Upload Section -->
+                    <div class="upload-section">
+                        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--dark);">
+                            <i class="fas fa-cloud-upload-alt"></i> Document Upload
+                        </h3>
+
+                        <!-- Upload Tabs -->
+                        <div class="upload-tabs">
+                            <button class="upload-tab active" id="tabFiles" onclick="switchTab('files')">
+                                <i class="fas fa-file-upload"></i> Upload Files
+                            </button>
+                            <button class="upload-tab" id="tabUrl" onclick="switchTab('url')">
+                                <i class="fas fa-link"></i> Load from URL
+                            </button>
+                        </div>
+
+                        <!-- File Upload Zone -->
+                        <div class="upload-zone" id="uploadZone">
+                            <input type="file" id="fileInput" accept=".pdf,.docx,.txt" multiple hidden>
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="upload-text">Drop files here or click to browse</div>
+                            <div class="upload-hint">PDF, DOCX, TXT - Multiple files (Max 100MB each)</div>
+                        </div>
+
+                        <!-- URL Input Zone -->
+                        <div class="url-zone" id="urlZone" style="display: none;">
+                            <div class="input-group" style="margin-bottom: 0.5rem;">
+                                <div class="input-wrapper">
+                                    <i class="fas fa-globe"></i>
+                                    <input type="text" class="input-field" id="urlInput" placeholder="https://example.com/document">
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" id="loadUrlBtn" style="width: 100%;">
+                                <i class="fas fa-download"></i> Load URL Content
+                            </button>
+                        </div>
+
+                        <!-- Sources Section -->
+                        <div class="sources-section" id="sourcesSection" style="display: none;">
+                            <div class="sources-header">
+                                <span class="sources-title"><i class="fas fa-folder-open"></i> Loaded Sources</span>
+                                <button class="clear-btn" id="clearDocsBtn">
+                                    <i class="fas fa-trash"></i> Clear All
+                                </button>
+                            </div>
+                            <div class="sources-list" id="sourcesList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Grid -->
+            <div class="results-grid">
+                <!-- Case Brief Section -->
+                <div class="result-card" id="brief-section">
+                    <div class="result-header brief">
+                        <div class="result-header-left">
+                            <div class="result-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div>
+                                <div class="result-title">Case Brief</div>
+                                <div class="result-subtitle">AI-Generated Legal Summary</div>
+                            </div>
+                        </div>
+                        <div class="result-header-right">
+                            <select id="briefLanguage" class="language-select-brief">
+                                <option value="en">English</option>
+                                <option value="hi">हिंदी</option>
+                                <option value="both">Both / दोनों</option>
+                            </select>
+                            <button class="generate-btn" id="generateBrief" disabled>
+                                <i class="fas fa-magic"></i> Generate
+                            </button>
+                        </div>
+                    </div>
+                    <div class="result-content" id="briefContent">
+                        <div class="result-placeholder">
+                            <i class="fas fa-gavel"></i>
+                            <p>Upload a document and click Generate to create a case brief</p>
+                        </div>
+                    </div>
+                    <div class="export-buttons" id="exportButtons" style="display: none;">
+                        <button class="export-btn" onclick="exportBrief('pdf')" title="Export as PDF">
+                            <i class="fas fa-file-pdf"></i> Export PDF
+                        </button>
+                        <button class="export-btn" onclick="exportBrief('docx')" title="Export as DOCX">
+                            <i class="fas fa-file-word"></i> Export DOCX
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Analysis Section -->
+                <div class="result-card" id="analysis-section">
+                    <div class="result-header analysis">
+                        <div class="result-header-left">
+                            <div class="result-icon">
+                                <i class="fas fa-search-plus"></i>
+                            </div>
+                            <div>
+                                <div class="result-title">Document Analysis</div>
+                                <div class="result-subtitle">Deep Legal Insights</div>
+                            </div>
+                        </div>
+                        <button class="generate-btn" id="analyzeDoc" disabled>
+                            <i class="fas fa-microscope"></i> Analyze
+                        </button>
+                    </div>
+                    <div class="result-content" id="analysisContent">
+                        <div class="result-placeholder">
+                            <i class="fas fa-chart-pie"></i>
+                            <p>Upload a document and click Analyze for detailed insights</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document History Section -->
+                <div class="result-card" id="history-section">
+                    <div class="result-header history">
+                        <div class="result-header-left">
+                            <div class="result-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <div>
+                                <div class="result-title">Document History <span class="pro-badge-small">PRO</span></div>
+                                <div class="result-subtitle">Your Previous Documents</div>
+                            </div>
+                        </div>
+                        <button class="generate-btn" id="refreshHistory" onclick="loadDocumentHistory()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <div class="result-content" id="historyContent">
+                        <div class="history-list" id="historyList">
+                            <div class="history-empty">
+                                <i class="fas fa-folder-open"></i>
+                                <p>No document history yet</p>
+                                <p style="font-size: 0.85rem; margin-top: 0.5rem;">Upload and analyze documents to see them here</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">Juris<span>Mind</span> AI</div>
+            <p class="footer-text">
+                Transform your legal research with AI-powered document analysis, case brief generation, and intelligent search.
+            </p>
+            <div class="footer-developer">
+                <p>Developed by <strong>anonymous</strong> at IIT BHU Varanasi</p>
+                            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 JurisMind AI. Built with AI & Machine Learning.</p>
+        </div>
+    </footer>
+
+    <!-- Floating Chatbot Trigger -->
+    <button class="chatbot-trigger" id="chatbotTrigger">
+        <i class="fas fa-comments"></i>
+        <span class="notification-badge" id="chatBadge" style="display: none;">1</span>
+    </button>
+
+    <!-- Chatbot Popup -->
+    <div class="chatbot-popup" id="chatbotPopup">
+        <div class="chatbot-header">
+            <div class="chatbot-header-left">
+                <div class="chatbot-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="chatbot-info">
+                    <h4>JurisMind Assistant</h4>
+                    <div class="chatbot-status">
+                        <span class="status-dot"></span>
+                        Online - Ready to help
+                    </div>
+                </div>
+            </div>
+            <button class="chatbot-close" id="chatbotClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="chatbot-messages" id="chatMessages">
+            <div class="chat-msg ai">
+                <strong>Welcome to JurisMind AI!</strong><br><br>
+                I'm your AI legal assistant. Upload a document to get started, or ask me any legal question. I can help with:
+                <ul style="margin-top: 0.5rem; padding-left: 1.25rem;">
+                    <li>Document Q&A</li>
+                    <li>Legal research</li>
+                    <li>Case explanations</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <button class="quick-action" onclick="sendQuickMessage('Summarize the document')">Summarize</button>
+            <button class="quick-action" onclick="sendQuickMessage('What are the key points?')">Key Points</button>
+            <button class="quick-action" onclick="sendQuickMessage('List the parties involved')">Parties</button>
+        </div>
+
+        <div class="language-selector-chat">
+            <label>Response in:</label>
+            <select id="chatLanguage">
+                <option value="en">English</option>
+                <option value="hi">हिंदी (Hindi)</option>
+                <option value="both">Both / दोनों</option>
+            </select>
+        </div>
+
+        <div class="chatbot-input">
+            <input type="text" id="chatInput" placeholder="Ask a question...">
+            <button class="voice-input-btn" id="voiceInputBtn" title="Voice Input (Pro)">
+                <i class="fas fa-microphone"></i>
+            </button>
+            <button class="chatbot-send" id="sendBtn">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Audio elements for sound effects -->
+    <audio id="sendSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1sb3F1d4GDhoaKi4yLioqJh4WEgoB+fHp5eHd3eHl7fH6Ag4SHiIqLjIyMi4qIhoSCgH58enl4d3d4eXt9f4GEhYiJi4yMjIuKiIaEgn9+fHp5eHd4eXt9f4KFh4mKjIyMi4qJh4WDgX9+fHp5eHh5e31/goWHiYqMjI2Mi4mHhYOBf35" type="audio/wav">
+    </audio>
+    <audio id="receiveSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRl9vT19teleGVhdhdmVmbXQAABBAAAAAAQABQB8AAEAfAAABAAQAZGF0YQ==" type="audio/wav">
+    </audio>
+
+    <script>
+        // Sound Effects
+        const sounds = {
+            send: null,
+            receive: null,
+            notification: null
+        };
+
+        // Create notification sound using Web Audio API
+        function createNotificationSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            return {
+                play: () => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                    oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                }
+            };
+        }
+
+        function createSendSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            return {
+                play: () => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.frequency.setValueAtTime(500, audioContext.currentTime);
+                    oscillator.frequency.setValueAtTime(700, audioContext.currentTime + 0.05);
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.15);
+                }
+            };
+        }
+
+        function createReceiveSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            return {
+                play: () => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+                    oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+                    oscillator.frequency.setValueAtTime(500, audioContext.currentTime + 0.2);
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                }
+            };
+        }
+
+        // Initialize sounds on first interaction
+        let soundsInitialized = false;
+        function initSounds() {
+            if (!soundsInitialized) {
+                sounds.send = createSendSound();
+                sounds.receive = createReceiveSound();
+                sounds.notification = createNotificationSound();
+                soundsInitialized = true;
+            }
+        }
+
+        document.addEventListener('click', initSounds, { once: true });
+
+        // DOM Elements
+        const navbar = document.getElementById('navbar');
+        const apiKeyInput = document.getElementById('apiKey');
+        const uploadZone = document.getElementById('uploadZone');
+        const urlZone = document.getElementById('urlZone');
+        const fileInput = document.getElementById('fileInput');
+        const urlInput = document.getElementById('urlInput');
+        const loadUrlBtn = document.getElementById('loadUrlBtn');
+        const sourcesSection = document.getElementById('sourcesSection');
+        const sourcesList = document.getElementById('sourcesList');
+        const clearDocsBtn = document.getElementById('clearDocsBtn');
+        const generateBriefBtn = document.getElementById('generateBrief');
+        const analyzeDocBtn = document.getElementById('analyzeDoc');
+        const briefContent = document.getElementById('briefContent');
+        const analysisContent = document.getElementById('analysisContent');
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const toastContainer = document.getElementById('toastContainer');
+        const tabFiles = document.getElementById('tabFiles');
+        const tabUrl = document.getElementById('tabUrl');
+        const chatbotTrigger = document.getElementById('chatbotTrigger');
+        const chatbotPopup = document.getElementById('chatbotPopup');
+        const chatbotClose = document.getElementById('chatbotClose');
+        const chatBadge = document.getElementById('chatBadge');
+
+        // State
+        let isDocumentUploaded = false;
+        let isApiKeySet = true;  // API key is pre-configured in .env
+        let uploadedSources = [];
+        let isChatOpen = false;
+
+        // Chatbot Toggle
+        chatbotTrigger.addEventListener('click', () => {
+            isChatOpen = !isChatOpen;
+            chatbotPopup.classList.toggle('active', isChatOpen);
+            chatbotTrigger.classList.toggle('active', isChatOpen);
+            chatBadge.style.display = 'none';
+            if (isChatOpen) {
+                chatInput.focus();
+            }
+        });
+
+        chatbotClose.addEventListener('click', () => {
+            isChatOpen = false;
+            chatbotPopup.classList.remove('active');
+            chatbotTrigger.classList.remove('active');
+        });
+
+        // Switch tabs
+        function switchTab(tab) {
+            if (tab === 'files') {
+                uploadZone.style.display = 'block';
+                urlZone.style.display = 'none';
+                tabFiles.classList.add('active');
+                tabUrl.classList.remove('active');
+            } else {
+                uploadZone.style.display = 'none';
+                urlZone.style.display = 'block';
+                tabFiles.classList.remove('active');
+                tabUrl.classList.add('active');
+            }
+        }
+
+        // Update sources display
+        function updateSourcesDisplay() {
+            if (uploadedSources.length > 0) {
+                sourcesSection.style.display = 'block';
+                sourcesList.innerHTML = uploadedSources.map(source =>
+                    `<span class="source-tag"><i class="fas fa-file"></i> ${source}</span>`
+                ).join('');
+            } else {
+                sourcesSection.style.display = 'none';
+            }
+        }
+
+        // Toast Notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // API Key is pre-configured, no need for manual input
+
+        // Upload Zone Events
+        uploadZone.addEventListener('click', () => fileInput.click());
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+        uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) handleFileUpload(e.dataTransfer.files);
+        });
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) handleFileUpload(e.target.files);
+        });
+
+        // Handle File Upload
+        async function handleFileUpload(files) {
+            const fileArray = Array.from(files);
+            const validFiles = fileArray.filter(file => {
+                const ext = file.name.split('.').pop().toLowerCase();
+                if (!['pdf', 'docx', 'txt'].includes(ext)) {
+                    showToast(`${file.name}: Unsupported file type`, 'error');
+                    return false;
+                }
+                if (file.size > 100 * 1024 * 1024) {
+                    showToast(`${file.name}: File too large (max 100MB)`, 'error');
+                    return false;
+                }
+                return true;
+            });
+
+            if (!validFiles.length) return;
+
+            // Calculate total size
+            const totalSize = validFiles.reduce((sum, f) => sum + f.size, 0);
+            const sizeMB = (totalSize / (1024 * 1024)).toFixed(2);
+
+            // Show uploading message with file size info
+            showToast(`Uploading ${validFiles.length} file(s) (${sizeMB} MB)... Please wait.`);
+
+            // Update upload zone to show progress
+            const uploadIcon = uploadZone.querySelector('.upload-icon');
+            const uploadText = uploadZone.querySelector('.upload-text');
+            const originalIconHTML = uploadIcon.innerHTML;
+            const originalTextHTML = uploadText.innerHTML;
+
+            uploadIcon.innerHTML = '<div class="spinner spinner-dark"></div>';
+            uploadText.innerHTML = 'Processing document... This may take a moment for large files.';
+
+            const formData = new FormData();
+            validFiles.forEach(file => formData.append('files', file));
+
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+
+                // Restore upload zone
+                uploadIcon.innerHTML = originalIconHTML;
+                uploadText.innerHTML = originalTextHTML;
+
+                if (data.success) {
+                    isDocumentUploaded = true;
+                    if (data.files) {
+                        data.files.forEach(f => {
+                            if (!uploadedSources.includes(f)) uploadedSources.push(f);
+                        });
+                    }
+                    updateSourcesDisplay();
+                    updateButtonStates();
+                    showToast(`Success! ${data.chunks} text chunks created from ${data.files?.length || validFiles.length} file(s).`);
+
+                    // Add message to chat
+                    addChatMessage('ai', `Documents uploaded successfully! Created ${data.chunks} text chunks. You can now ask questions about the content.`);
+                    if (!isChatOpen) {
+                        chatBadge.style.display = 'flex';
+                        chatBadge.textContent = '1';
+                        if (sounds.notification) sounds.notification.play();
+                    }
+                } else {
+                    showToast(data.message || 'Upload failed', 'error');
+                }
+            } catch (error) {
+                // Restore upload zone
+                uploadIcon.innerHTML = originalIconHTML;
+                uploadText.innerHTML = originalTextHTML;
+                console.error('Upload error:', error);
+                showToast('Error uploading file. Please try again.', 'error');
+            }
+        }
+
+        // Load URL
+        loadUrlBtn.addEventListener('click', async () => {
+            const url = urlInput.value.trim();
+            if (!url) {
+                showToast('Please enter a URL', 'error');
+                return;
+            }
+
+            loadUrlBtn.innerHTML = '<div class="spinner"></div> Loading...';
+            loadUrlBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/upload-url', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ urls: [url] })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    isDocumentUploaded = true;
+                    if (data.urls) {
+                        data.urls.forEach(u => {
+                            const hostname = new URL(u).hostname;
+                            if (!uploadedSources.includes(hostname)) uploadedSources.push(hostname);
+                        });
+                    }
+                    updateSourcesDisplay();
+                    updateButtonStates();
+                    showToast(`Loaded ${data.chunks} chunks from URL!`);
+                    urlInput.value = '';
+                } else {
+                    showToast(data.message || 'Failed to load URL', 'error');
+                }
+            } catch (error) {
+                showToast('Error loading URL', 'error');
+            }
+
+            loadUrlBtn.innerHTML = '<i class="fas fa-download"></i> Load URL Content';
+            loadUrlBtn.disabled = false;
+        });
+
+        // Clear Documents
+        clearDocsBtn.addEventListener('click', async () => {
+            try {
+                await fetch('/api/clear', { method: 'POST' });
+                uploadedSources = [];
+                isDocumentUploaded = false;
+                updateSourcesDisplay();
+                updateButtonStates();
+                briefContent.innerHTML = '<div class="result-placeholder"><i class="fas fa-gavel"></i><p>Upload a document and click Generate to create a case brief</p></div>';
+                analysisContent.innerHTML = '<div class="result-placeholder"><i class="fas fa-chart-pie"></i><p>Upload a document and click Analyze for detailed insights</p></div>';
+                showToast('All documents cleared');
+            } catch (error) {
+                showToast('Error clearing documents', 'error');
+            }
+        });
+
+        // Update Button States
+        function updateButtonStates() {
+            generateBriefBtn.disabled = !isDocumentUploaded || !isApiKeySet;
+            analyzeDocBtn.disabled = !isDocumentUploaded || !isApiKeySet;
+        }
+
+        // Generate Case Brief
+        generateBriefBtn.addEventListener('click', async () => {
+            const outputLanguage = document.getElementById('briefLanguage').value;
+            generateBriefBtn.innerHTML = '<div class="spinner"></div> Generating...';
+            generateBriefBtn.disabled = true;
+
+            const langLabel = outputLanguage === 'hi' ? 'Hindi' : (outputLanguage === 'both' ? 'bilingual' : 'English');
+            briefContent.innerHTML = `<div style="text-align: center; padding: 2rem;"><div class="spinner spinner-dark" style="margin: 0 auto;"></div><p style="margin-top: 1rem; color: var(--gray);">Generating ${langLabel} case brief...</p></div>`;
+
+            try {
+                const response = await fetch('/api/generate-brief', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ output_language: outputLanguage })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    briefContent.innerHTML = `<div class="result-output">${formatMarkdown(data.brief)}</div>`;
+                    // Store brief content for export
+                    window.lastBriefContent = data.brief;
+                    // Show export buttons
+                    document.getElementById('exportButtons').style.display = 'flex';
+                    showToast('Case brief generated!');
+                } else {
+                    briefContent.innerHTML = `<div class="result-placeholder" style="color: #ef4444;"><i class="fas fa-exclamation-triangle"></i><p>${data.message || 'Failed to generate brief'}</p></div>`;
+                    document.getElementById('exportButtons').style.display = 'none';
+                    if (data.upgrade_required) {
+                        showToast(data.message + ' <a href="/pricing" style="color:white;text-decoration:underline;">Upgrade Now</a>', 'error');
+                    } else {
+                        showToast(data.message || 'Failed to generate brief', 'error');
+                    }
+                }
+            } catch (error) {
+                briefContent.innerHTML = '<div class="result-placeholder" style="color: #ef4444;"><i class="fas fa-exclamation-triangle"></i><p>Error generating brief</p></div>';
+                document.getElementById('exportButtons').style.display = 'none';
+                showToast('Error generating brief', 'error');
+            }
+
+            generateBriefBtn.innerHTML = '<i class="fas fa-magic"></i> Generate';
+            updateButtonStates();
+        });
+
+        // Analyze Document
+        analyzeDocBtn.addEventListener('click', async () => {
+            analyzeDocBtn.innerHTML = '<div class="spinner"></div> Analyzing...';
+            analyzeDocBtn.disabled = true;
+            analysisContent.innerHTML = '<div style="text-align: center; padding: 2rem;"><div class="spinner spinner-dark" style="margin: 0 auto;"></div><p style="margin-top: 1rem; color: var(--gray);">Analyzing document...</p></div>';
+
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    analysisContent.innerHTML = `<div class="result-output">${formatMarkdown(data.analysis)}</div>`;
+                    showToast('Analysis complete!');
+                } else {
+                    analysisContent.innerHTML = `<div class="result-placeholder" style="color: #ef4444;"><i class="fas fa-exclamation-triangle"></i><p>${data.message || 'Failed to analyze'}</p></div>`;
+                    showToast(data.message || 'Failed to analyze', 'error');
+                }
+            } catch (error) {
+                analysisContent.innerHTML = '<div class="result-placeholder" style="color: #ef4444;"><i class="fas fa-exclamation-triangle"></i><p>Error analyzing document</p></div>';
+                showToast('Error analyzing document', 'error');
+            }
+
+            analyzeDocBtn.innerHTML = '<i class="fas fa-microscope"></i> Analyze';
+            updateButtonStates();
+        });
+
+        // Chat Functions
+        function addChatMessage(type, content) {
+            const msg = document.createElement('div');
+            msg.className = `chat-msg ${type}`;
+            msg.innerHTML = content;
+            chatMessages.appendChild(msg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            if (type === 'ai' && sounds.receive) {
+                sounds.receive.play();
+            }
+        }
+
+        function showTypingIndicator() {
+            const typing = document.createElement('div');
+            typing.className = 'typing-indicator';
+            typing.id = 'typingIndicator';
+            typing.innerHTML = '<span></span><span></span><span></span>';
+            chatMessages.appendChild(typing);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+        }
+
+        async function sendMessage() {
+            const query = chatInput.value.trim();
+            if (!query) return;
+
+            if (!isApiKeySet) {
+                showToast('Please set your API key first', 'error');
+                return;
+            }
+
+            const outputLanguage = document.getElementById('chatLanguage').value;
+
+            addChatMessage('user', query);
+            chatInput.value = '';
+            if (sounds.send) sounds.send.play();
+
+            showTypingIndicator();
+            sendBtn.disabled = true;
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query, output_language: outputLanguage })
+                });
+                const data = await response.json();
+
+                removeTypingIndicator();
+
+                if (data.success) {
+                    addChatMessage('ai', formatMarkdown(data.response));
+                } else {
+                    addChatMessage('ai', `<span style="color: #ef4444;">Error: ${data.message}</span>`);
+                }
+            } catch (error) {
+                removeTypingIndicator();
+                addChatMessage('ai', '<span style="color: #ef4444;">Error communicating with AI</span>');
+            }
+
+            sendBtn.disabled = false;
+        }
+
+        function sendQuickMessage(message) {
+            chatInput.value = message;
+            sendMessage();
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Format Markdown
+        function formatMarkdown(text) {
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code>$1</code>')
+                .replace(/^### (.*$)/gm, '<h4 style="margin: 1rem 0 0.5rem; color: var(--primary);">$1</h4>')
+                .replace(/^## (.*$)/gm, '<h3 style="margin: 1.5rem 0 0.75rem; color: var(--dark);">$1</h3>')
+                .replace(/^# (.*$)/gm, '<h2 style="margin: 1.5rem 0 1rem; color: var(--dark);">$1</h2>')
+                .replace(/^\d+\. (.*$)/gm, '<li>$1</li>')
+                .replace(/^- (.*$)/gm, '<li>$1</li>')
+                .replace(/\n/g, '<br>');
+        }
+
+        // Initialize
+        updateButtonStates();
+
+        // Voice Input Feature (Pro Only)
+        let voiceRecognition = null;
+        let voiceTranscriptText = '';
+        let hasVoiceAccess = false;
+        const voiceInputBtn = document.getElementById('voiceInputBtn');
+        const voiceOverlay = document.getElementById('voiceOverlay');
+        const voiceProModal = document.getElementById('voiceProModal');
+        const voiceTranscript = document.getElementById('voiceTranscript');
+
+        // Check voice feature access
+        async function checkVoiceAccess() {
+            try {
+                const response = await fetch('/api/check-feature-access?feature=voice_input');
+                const data = await response.json();
+                hasVoiceAccess = data.has_access;
+
+                if (!hasVoiceAccess) {
+                    voiceInputBtn.classList.add('locked');
+                    voiceInputBtn.title = 'Voice Input (Pro Feature)';
+                } else {
+                    voiceInputBtn.classList.remove('locked');
+                    voiceInputBtn.title = 'Voice Input';
+                }
+            } catch (error) {
+                console.error('Error checking voice access:', error);
+                voiceInputBtn.classList.add('locked');
+            }
+        }
+
+        // Initialize Speech Recognition
+        function initSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                voiceRecognition = new SpeechRecognition();
+                voiceRecognition.continuous = true;
+                voiceRecognition.interimResults = true;
+                voiceRecognition.lang = 'en-IN'; // Support both English and Hindi
+
+                voiceRecognition.onresult = (event) => {
+                    let interimTranscript = '';
+                    let finalTranscript = '';
+
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript;
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+
+                    voiceTranscriptText = finalTranscript || interimTranscript;
+                    voiceTranscript.textContent = voiceTranscriptText || '';
+                };
+
+                voiceRecognition.onerror = (event) => {
+                    console.error('Speech recognition error:', event.error);
+                    if (event.error === 'no-speech') {
+                        voiceTranscript.textContent = 'No speech detected. Please try again.';
+                    } else if (event.error === 'audio-capture') {
+                        voiceTranscript.textContent = 'No microphone found. Please check your device.';
+                    } else if (event.error === 'not-allowed') {
+                        voiceTranscript.textContent = 'Microphone access denied. Please allow microphone access.';
+                    }
+                };
+
+                voiceRecognition.onend = () => {
+                    voiceInputBtn.classList.remove('recording');
+                };
+
+                return true;
+            }
+            return false;
+        }
+
+        // Handle voice button click
+        voiceInputBtn.addEventListener('click', async () => {
+            if (!hasVoiceAccess) {
+                // Show Pro upgrade modal
+                voiceProModal.classList.add('active');
+                return;
+            }
+
+            // Check browser support
+            if (!initSpeechRecognition()) {
+                showToast('Voice input is not supported in your browser. Please use Chrome or Edge.', 'error');
+                return;
+            }
+
+            // Request microphone permission and start recording
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+                startVoiceRecording();
+            } catch (error) {
+                showToast('Microphone access is required for voice input.', 'error');
+            }
+        });
+
+        function startVoiceRecording() {
+            voiceTranscriptText = '';
+            voiceTranscript.textContent = '';
+            voiceInputBtn.classList.add('recording');
+            voiceOverlay.classList.add('active');
+
+            if (voiceRecognition) {
+                voiceRecognition.start();
+            }
+        }
+
+        function cancelVoiceInput() {
+            if (voiceRecognition) {
+                voiceRecognition.stop();
+            }
+            voiceInputBtn.classList.remove('recording');
+            voiceOverlay.classList.remove('active');
+            voiceTranscriptText = '';
+            voiceTranscript.textContent = '';
+        }
+
+        function sendVoiceInput() {
+            if (voiceRecognition) {
+                voiceRecognition.stop();
+            }
+            voiceInputBtn.classList.remove('recording');
+            voiceOverlay.classList.remove('active');
+
+            if (voiceTranscriptText.trim()) {
+                chatInput.value = voiceTranscriptText.trim();
+                sendMessage();
+            } else {
+                showToast('No speech detected. Please try again.', 'error');
+            }
+
+            voiceTranscriptText = '';
+            voiceTranscript.textContent = '';
+        }
+
+        function closeVoiceProModal() {
+            voiceProModal.classList.remove('active');
+        }
+
+        function openSubscriptionFromVoice() {
+            voiceProModal.classList.remove('active');
+            showSubscriptionModal();
+        }
+
+        // Initialize voice feature check
+        checkVoiceAccess();
+
+        // User Menu Functions
+        function toggleUserMenu() {
+            const userMenu = document.getElementById('userMenu');
+            userMenu.classList.toggle('active');
+        }
+
+        // Close user menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const userMenu = document.getElementById('userMenu');
+            if (userMenu && !userMenu.contains(e.target)) {
+                userMenu.classList.remove('active');
+            }
+        });
+
+        async function logout() {
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast('Logged out successfully');
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 1000);
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                window.location.href = '/login';
+            }
+        }
+
+        // Export brief function
+        async function exportBrief(format) {
+            if (!window.lastBriefContent) {
+                showToast('Please generate a case brief first', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/export/brief', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        format: format,
+                        content: window.lastBriefContent
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Convert base64 to blob and download
+                    const byteCharacters = atob(data.content);
+                    const byteNumbers = new Array(byteCharacters.length);
+                    for (let i = 0; i < byteCharacters.length; i++) {
+                        byteNumbers[i] = byteCharacters.charCodeAt(i);
+                    }
+                    const byteArray = new Uint8Array(byteNumbers);
+                    const mimeType = format === 'pdf' ? 'application/pdf' : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+                    const blob = new Blob([byteArray], { type: mimeType });
+
+                    // Create download link
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = data.filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+
+                    showToast(`Brief exported as ${format.toUpperCase()}!`);
+                } else {
+                    if (data.upgrade_required) {
+                        showToast(data.message, 'error');
+                        setTimeout(() => {
+                            window.location.href = '/pricing';
+                        }, 2000);
+                    } else {
+                        showToast(data.message || 'Export failed', 'error');
+                    }
+                }
+            } catch (error) {
+                console.error('Export error:', error);
+                showToast('Error exporting brief', 'error');
+            }
+        }
+
+        // Load user info on page load
+        async function loadUserInfo() {
+            try {
+                const response = await fetch('/api/auth/user');
+                const data = await response.json();
+
+                if (data.success && data.logged_in) {
+                    document.getElementById('userNameDisplay').textContent = data.user.name.split(' ')[0];
+                    document.getElementById('dropdownUserName').textContent = data.user.name;
+                    document.getElementById('dropdownUserEmail').textContent = data.user.email;
+                }
+            } catch (error) {
+                console.error('Failed to load user info:', error);
+            }
+        }
+
+        // Load subscription info
+        let currentPlan = 'free';
+        let planFeatures = {};
+
+        async function loadSubscriptionInfo() {
+            try {
+                const response = await fetch('/api/subscription/current');
+                const data = await response.json();
+
+                if (data.success) {
+                    currentPlan = data.plan;
+                    planFeatures = data.plan_details.features;
+
+                    // Update plan badge
+                    const planBadge = document.getElementById('planBadge');
+                    planBadge.className = 'plan-badge ' + currentPlan;
+                    planBadge.textContent = data.plan_details.name + ' Plan';
+
+                    // Update usage info
+                    const usageInfo = document.getElementById('usageInfo');
+                    const docsUsed = data.limits.documents.used;
+                    const docsLimit = data.limits.documents.limit;
+                    if (docsLimit === -1) {
+                        usageInfo.textContent = `${docsUsed} documents (Unlimited)`;
+                    } else {
+                        usageInfo.textContent = `${docsUsed}/${docsLimit} documents`;
+                    }
+
+                    // Hide upgrade button for pro/enterprise users
+                    const upgradeBtn = document.getElementById('upgradeBtn');
+                    if (currentPlan !== 'free') {
+                        upgradeBtn.classList.add('hidden');
+                    }
+
+                    // Update UI based on plan features
+                    updateUIForPlan();
+                }
+            } catch (error) {
+                console.error('Failed to load subscription info:', error);
+            }
+        }
+
+        function updateUIForPlan() {
+            // Show/hide features based on plan
+            const analyzeBtn = document.getElementById('analyzeDoc');
+            const languageSelectors = document.querySelectorAll('#chatLanguage, #briefLanguage');
+
+            // For free plan, show indicators on disabled features
+            if (currentPlan === 'free') {
+                // Add Pro badge to restricted features
+                if (analyzeBtn) {
+                    analyzeBtn.innerHTML = '<i class="fas fa-microscope"></i> Analyze <span class="pro-badge-small">PRO</span>';
+                }
+
+                // Disable non-English options for free plan
+                languageSelectors.forEach(select => {
+                    Array.from(select.options).forEach(option => {
+                        if (option.value !== 'en') {
+                            option.disabled = true;
+                            option.textContent += ' (Pro)';
+                        }
+                    });
+                });
+            }
+        }
+
+        // Check feature access before actions
+        function checkFeatureAccess(feature, message) {
+            if (!planFeatures[feature]) {
+                showToast(message || 'This feature requires Pro plan. Upgrade to access.', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        // Load document history with full details
+        async function loadDocumentHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = '<div style="text-align:center;padding:2rem;"><div class="spinner spinner-dark" style="margin:0 auto;"></div><p style="margin-top:1rem;color:var(--gray);">Loading history...</p></div>';
+
+            try {
+                const response = await fetch('/api/subscription/history?details=true');
+                const data = await response.json();
+
+                if (data.success) {
+                    if (data.history && data.history.length > 0) {
+                        // Store history data globally for later access
+                        historyData = data.history;
+
+                        historyList.innerHTML = data.history.map((item, index) => {
+                            const hasBrief = item.case_brief && item.case_brief.length > 0;
+                            const hasQA = item.chat_history && item.chat_history.length > 0;
+                            const hasContent = hasBrief || hasQA;
+                            const briefPreview = hasBrief ? truncateText(item.case_brief, 500) : '';
+
+                            return `
+                            <div class="history-item ${hasContent ? 'has-content' : ''}" data-id="${item.id}" onclick="toggleHistoryItem(this, event)">
+                                <div class="history-item-header">
+                                    <div class="history-icon">
+                                        <i class="fas fa-file-${item.type === 'pdf' ? 'pdf' : item.type === 'docx' ? 'word' : 'alt'}"></i>
+                                    </div>
+                                    <div class="history-details">
+                                        <div class="history-name">${escapeHtml(item.filename || 'Document')}</div>
+                                        <div class="history-meta">
+                                            <span>${formatHistoryDate(item.uploaded_at)}</span>
+                                            ${item.pages ? ` • ${item.pages} pages` : ''}
+                                        </div>
+                                        <div class="history-badges">
+                                            ${hasBrief ? '<span class="history-badge brief"><i class="fas fa-file-alt"></i> Brief</span>' : ''}
+                                            ${hasQA ? `<span class="history-badge qa"><i class="fas fa-comments"></i> ${item.chat_history.length} Q&A</span>` : ''}
+                                            ${!hasContent ? '<span class="history-badge" style="background:rgba(156,163,175,0.15);color:#6b7280;"><i class="fas fa-clock"></i> No activity yet</span>' : ''}
+                                        </div>
+                                    </div>
+                                    <button class="history-expand-btn" title="${hasContent ? 'View details' : 'View document info'}">
+                                        <i class="fas fa-chevron-down"></i>
+                                    </button>
+                                </div>
+
+                                <div class="history-expanded-content">
+                                    ${hasBrief ? `
+                                    <div class="history-section">
+                                        <div class="history-section-title">
+                                            <i class="fas fa-file-alt"></i> Case Brief
+                                            ${item.brief_generated_at ? `<span style="font-weight:normal;font-size:0.75rem;color:var(--gray);">Generated ${formatHistoryDate(item.brief_generated_at)}</span>` : ''}
+                                        </div>
+                                        <div class="history-brief-preview">${formatBriefPreview(briefPreview)}</div>
+                                        <button class="view-full-brief-btn" onclick="event.stopPropagation(); viewFullBrief('${item.id}', ${index})">
+                                            <i class="fas fa-expand"></i> View Full Brief
+                                        </button>
+                                    </div>
+                                    ` : ''}
+
+                                    ${hasQA ? `
+                                    <div class="history-section">
+                                        <div class="history-section-title">
+                                            <i class="fas fa-comments"></i> Questions & Answers (${item.chat_history.length})
+                                        </div>
+                                        <div class="history-qa-list">
+                                            ${item.chat_history.slice().reverse().map(qa => `
+                                            <div class="history-qa-item">
+                                                <div class="history-qa-question">
+                                                    <i class="fas fa-question-circle"></i>
+                                                    <span>${escapeHtml(qa.question)}</span>
+                                                </div>
+                                                <div class="history-qa-answer">${escapeHtml(truncateText(qa.answer, 200))}</div>
+                                                <div class="history-qa-time">${formatHistoryDate(qa.timestamp)}</div>
+                                            </div>
+                                            `).join('')}
+                                        </div>
+                                    </div>
+                                    ` : ''}
+
+                                    ${!hasContent ? `
+                                    <div class="history-no-data">
+                                        <i class="fas fa-info-circle"></i>
+                                        <p>No case brief or Q&A yet for this document.</p>
+                                        <p style="margin-top:0.5rem;">Upload this document again and generate a brief or ask questions to see the history here.</p>
+                                    </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `}).join('');
+                    } else {
+                        historyList.innerHTML = `
+                            <div class="history-empty">
+                                <i class="fas fa-folder-open"></i>
+                                <p>No document history yet</p>
+                                <p style="font-size: 0.85rem; margin-top: 0.5rem;">Upload and analyze documents to see them here</p>
+                            </div>
+                        `;
+                    }
+                } else {
+                    if (data.upgrade_required) {
+                        historyList.innerHTML = `
+                            <div class="history-empty">
+                                <i class="fas fa-crown" style="color: #f59e0b;"></i>
+                                <p>Document History is a Pro Feature</p>
+                                <p style="font-size: 0.85rem; margin-top: 0.5rem;">Upgrade to Pro to access your document history</p>
+                                <a href="/pricing" class="btn btn-primary" style="margin-top: 1rem; display: inline-block; padding: 0.75rem 1.5rem; border-radius: 8px; text-decoration: none;">
+                                    <i class="fas fa-arrow-up"></i> Upgrade to Pro
+                                </a>
+                            </div>
+                        `;
+                    } else {
+                        historyList.innerHTML = `
+                            <div class="history-empty">
+                                <i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i>
+                                <p>${data.message || 'Error loading history'}</p>
+                            </div>
+                        `;
+                    }
+                }
+            } catch (error) {
+                historyList.innerHTML = `
+                    <div class="history-empty">
+                        <i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i>
+                        <p>Error loading history</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Store history data for viewing full briefs
+        let historyData = [];
+
+        // Toggle expand/collapse history item
+        function toggleHistoryItem(element, event) {
+            // Don't toggle if clicking on a button inside
+            if (event && event.target.closest('.view-full-brief-btn')) {
+                return;
+            }
+            const historyItem = element.classList.contains('history-item') ? element : element.closest('.history-item');
+            historyItem.classList.toggle('expanded');
+        }
+
+        // View full brief in the brief section
+        function viewFullBrief(docId, index) {
+            // Fetch full brief from API and display in brief section
+            fetch('/api/subscription/history?details=true')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.history) {
+                        const item = data.history.find(h => h.id === docId);
+                        if (item && item.case_brief) {
+                            const briefContent = document.getElementById('briefContent');
+                            briefContent.innerHTML = marked.parse(item.case_brief);
+
+                            // Show export buttons
+                            document.getElementById('exportBriefPdf').classList.remove('hidden');
+                            document.getElementById('exportBriefDocx').classList.remove('hidden');
+
+                            // Scroll to brief section
+                            document.getElementById('briefContent').scrollIntoView({ behavior: 'smooth' });
+
+                            showToast('Brief loaded from history', 'success');
+                        }
+                    }
+                })
+                .catch(err => {
+                    showToast('Failed to load brief', 'error');
+                });
+        }
+
+        // Truncate text helper
+        function truncateText(text, maxLength) {
+            if (!text) return '';
+            if (text.length <= maxLength) return text;
+            return text.substring(0, maxLength) + '...';
+        }
+
+        // Escape HTML helper
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Format brief preview (simple markdown)
+        function formatBriefPreview(text) {
+            if (!text) return '';
+            // Simple markdown-like formatting
+            return escapeHtml(text)
+                .replace(/## (.*)/g, '<strong style="color:var(--primary);">$1</strong>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function formatHistoryDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} min ago`;
+            if (diffHours < 24) return `${diffHours} hours ago`;
+            if (diffDays < 7) return `${diffDays} days ago`;
+            return date.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        // ==================== GAMIFICATION FUNCTIONS ====================
+
+        // Toggle gamification dashboard
+        function toggleGamification() {
+            const dashboard = document.getElementById('gamificationDashboard');
+            const icon = document.getElementById('gamificationToggleIcon');
+            dashboard.classList.toggle('collapsed');
+            icon.classList.toggle('fa-chevron-up');
+            icon.classList.toggle('fa-chevron-down');
+
+            // Save preference
+            localStorage.setItem('gamificationCollapsed', dashboard.classList.contains('collapsed'));
+        }
+
+        // Load gamification stats
+        async function loadGamificationStats() {
+            try {
+                const response = await fetch('/api/gamification/stats');
+                const data = await response.json();
+
+                console.log('Gamification stats response:', data);
+
+                if (data.success) {
+                    // Update stats
+                    document.getElementById('statDocs').textContent = data.total_stats.documents_uploaded || 0;
+                    document.getElementById('statBriefs').textContent = data.total_stats.briefs_generated || 0;
+                    document.getElementById('statQuestions').textContent = data.total_stats.qa_queries || 0;
+                    document.getElementById('statPages').textContent = data.total_stats.pages_processed || 0;
+
+                    // Update time saved
+                    document.getElementById('timeSavedValue').textContent = data.time_saved.display;
+
+                    // Update member since
+                    if (data.member_since) {
+                        document.getElementById('memberSince').textContent = `Member since ${data.member_since}`;
+                    }
+
+                    // Update daily tip
+                    if (data.daily_tip) {
+                        document.getElementById('dailyTipTitle').textContent = data.daily_tip.title;
+                        document.getElementById('dailyTipContent').textContent = data.daily_tip.content;
+                        document.getElementById('dailyTipCategory').textContent = data.daily_tip.category;
+                        document.getElementById('dailyTipIcon').className = `fas ${data.daily_tip.icon}`;
+                    }
+
+                    // Update achievements count
+                    document.getElementById('achievementsCount').textContent =
+                        `${data.unlocked_count}/${data.total_achievements} Unlocked`;
+
+                    // Render achievements
+                    renderAchievements(data.achievements);
+
+                    // Show new achievement notifications
+                    if (data.new_achievements && data.new_achievements.length > 0) {
+                        showAchievementNotifications(data.new_achievements);
+                    }
+                } else {
+                    console.log('Gamification API returned not success:', data.message);
+                    // Load daily tip separately even if user not logged in
+                    loadDailyTipOnly();
+                }
+            } catch (error) {
+                console.error('Failed to load gamification stats:', error);
+                // Try loading just the daily tip
+                loadDailyTipOnly();
+            }
+        }
+
+        // Load only daily tip (for non-logged in users or when main API fails)
+        async function loadDailyTipOnly() {
+            try {
+                const response = await fetch('/api/gamification/daily-tip');
+                const data = await response.json();
+                if (data.success && data.tip) {
+                    document.getElementById('dailyTipTitle').textContent = data.tip.title;
+                    document.getElementById('dailyTipContent').textContent = data.tip.content;
+                    document.getElementById('dailyTipCategory').textContent = data.tip.category;
+                    document.getElementById('dailyTipIcon').className = `fas ${data.tip.icon}`;
+                }
+            } catch (e) {
+                console.error('Failed to load daily tip:', e);
+            }
+        }
+
+        // Render achievements grid
+        function renderAchievements(achievements) {
+            const grid = document.getElementById('achievementsGrid');
+            if (!achievements || achievements.length === 0) {
+                grid.innerHTML = '<p style="text-align:center;color:var(--gray);padding:1rem;">No achievements available</p>';
+                return;
+            }
+
+            grid.innerHTML = achievements.slice(0, 8).map(ach => `
+                <div class="achievement-card ${ach.unlocked ? 'unlocked' : ''}">
+                    ${ach.unlocked ? '<div class="achievement-badge"><i class="fas fa-check"></i></div>' : ''}
+                    <div class="achievement-icon" style="background: ${ach.color};">
+                        <i class="fas ${ach.icon}"></i>
+                    </div>
+                    <div class="achievement-name">${ach.name}</div>
+                    <div class="achievement-desc">${ach.description}</div>
+                    <div class="achievement-progress">
+                        <div class="achievement-progress-bar" style="width: ${ach.progress}%;"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show achievement unlock notifications
+        let achievementQueue = [];
+        let isShowingAchievement = false;
+
+        function showAchievementNotifications(achievements) {
+            achievementQueue = achievementQueue.concat(achievements);
+            if (!isShowingAchievement) {
+                showNextAchievement();
+            }
+        }
+
+        function showNextAchievement() {
+            if (achievementQueue.length === 0) {
+                isShowingAchievement = false;
+                return;
+            }
+
+            isShowingAchievement = true;
+            const achievement = achievementQueue.shift();
+
+            const notification = document.getElementById('achievementNotification');
+            const icon = document.getElementById('achievementNotifIcon');
+            const name = document.getElementById('achievementNotifName');
+            const desc = document.getElementById('achievementNotifDesc');
+
+            icon.innerHTML = `<i class="fas ${achievement.icon}"></i>`;
+            icon.style.background = achievement.color;
+            name.textContent = achievement.name;
+            desc.textContent = achievement.description;
+
+            notification.classList.add('show');
+
+            // Play sound effect (optional)
+            try {
+                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2teleR0CIOC3Z1l6onBCKEjH+Ol5NwIZ1LlYI0e8kVQUO66+pnc7DHKpxqZ2PQxypMSndTwNdqbFp3I6D3eix6dxOhF5pciobzoSeabJqW46EnunzKpvOhJ8qM6rbzoSfajQq287En6o0KtvOxJ+qdGrbjsSfqnRq287En6p0atuOxJ+qdGrbzsSfqnRq287En6p0KtvOxJ+qM+rbzsSfafOqm87Enymy6ltOhJ6pMmmaTkReaLGo2Q3D3agw6BfNQ1znsCbWTELcJu9l1MuCG6YupJOKwVsl7eORikDbJa1ikEmAWuVtIdBJQBrk7OFPyMAa5KygT0iAGuRsX88IQBrkK99Oh8Aa4+tezkfAGqOq3o4HgBqjat4Nx0Aao2qdjYcAGqMqXQ1GwBqi6hyNBoAaouob');
+                audio.volume = 0.3;
+                audio.play().catch(() => {});
+            } catch (e) {}
+
+            // Mark as seen on server
+            fetch('/api/gamification/mark-achievement-seen', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ achievement_ids: [achievement.id] })
+            }).catch(() => {});
+
+            // Hide after 4 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(showNextAchievement, 500);
+            }, 4000);
+        }
+
+        // Initialize gamification on page load
+        function initGamification() {
+            // Restore collapsed state
+            const collapsed = localStorage.getItem('gamificationCollapsed') === 'true';
+            if (collapsed) {
+                document.getElementById('gamificationDashboard').classList.add('collapsed');
+                document.getElementById('gamificationToggleIcon').classList.remove('fa-chevron-up');
+                document.getElementById('gamificationToggleIcon').classList.add('fa-chevron-down');
+            }
+
+            // Load stats
+            loadGamificationStats();
+        }
+
+        // Load user info on page load
+        loadUserInfo();
+        loadSubscriptionInfo();
+        loadDocumentHistory();
+        initGamification();
+    </script>
+</body>
+</html>

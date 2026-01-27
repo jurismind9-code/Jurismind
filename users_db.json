@@ -1,0 +1,25 @@
+{
+  "20704f5daa75eee20e876583c63aa90e": {
+    "id": "20704f5daa75eee20e876583c63aa90e",
+    "name": "Test 1",
+    "email": "aryagranth@gmail.com",
+    "phone": "9897983015",
+    "password": "pbkdf2:sha256:1000000$UyO8T7D5UY0UxM4v$dbeb78783a44f0f7981e76f1edd6883ba86453a59f7ac57618f98d69a91161e4",
+    "created_at": "2026-01-04T17:53:18.141469",
+    "verified": true,
+    "plan": "pro",
+    "plan_updated": "2026-01-04T23:36:29.750400"
+  },
+  "d78b67f5bfad624545302405f5c9ba99": {
+    "id": "d78b67f5bfad624545302405f5c9ba99",
+    "name": "Lakshya Aryan",
+    "email": "iitbhulakshya1@gmail.com",
+    "phone": "9319502967",
+    "password": "pbkdf2:sha256:1000000$Q9NDkgzOStK4PMlA$08d258cc512519ea22056bcbb6c986989ceed88dee0ad8a419a575c216ac3660",
+    "created_at": "2026-01-04T23:53:41.746401",
+    "verified": true,
+    "plan": "pro",
+    "plan_updated": "2026-01-05T00:03:23.996869",
+    "plan_expires": "2026-02-04T00:03:23.997424"
+  }
+}
