@@ -43,10 +43,6 @@ ENV/
 *.png
 *.gif
 
-# Allow static folder for CSS, JS and other assets
-!static/
-static/*
-
 # IDE
 .vscode/
 .idea/
