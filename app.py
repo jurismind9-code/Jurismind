@@ -2833,4 +2833,6 @@ if __name__ == '__main__':
     print("Starting JurisMind AI server...")
     print("Server ready! Embedding model will be loaded on first document upload.")
     # Disable reloader to prevent interruptions during uploads
-    app.run(debug=True, port=5000, threaded=True, use_reloader=False)
+    # Use PORT environment variable for Render, default to 5000 for local
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=False, port=port, threaded=True, use_reloader=False, host='0.0.0.0')
