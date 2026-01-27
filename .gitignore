@@ -57,9 +57,4 @@ Thumbs.db
 *.log
 
 # JSON databases (keep structure but ignore data)
-*_db.json
-payment_requests.json
-users_db.json
-history_db.json
-achievements_db.json
-usage_db.json
+# Note: requirements.txt should be tracked for deployment
