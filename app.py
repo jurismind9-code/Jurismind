@@ -89,7 +89,7 @@ SUBSCRIPTION_PLANS = {
     },
     'pro': {
         'name': 'Pro',
-        'price_inr': 499,
+        'price_inr': 199,
         'price_usd': 12,
         'documents_per_month': 80,
         'max_pages': 500,
