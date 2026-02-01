@@ -16,6 +16,9 @@ import random
 import re
 from datetime import datetime, timedelta
 from functools import wraps
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 # Load environment variables from .env file
 load_dotenv()
@@ -89,7 +92,7 @@ SUBSCRIPTION_PLANS = {
     },
     'pro': {
         'name': 'Pro',
-        'price_inr': 199,
+        'price_inr': 149,
         'price_usd': 12,
         'documents_per_month': 80,
         'max_pages': 500,
@@ -1344,6 +1347,80 @@ def get_current_user():
         }
     })
 
+# Email and SMS sending functions
+def send_otp_email(email, otp):
+    """Send OTP via email"""
+    try:
+        # Email configuration (you'll need to set these in .env file)
+        smtp_server = os.getenv('SMTP_SERVER', 'smtp.gmail.com')
+        smtp_port = int(os.getenv('SMTP_PORT', '587'))
+        sender_email = os.getenv('SENDER_EMAIL', '')
+        sender_password = os.getenv('SENDER_PASSWORD', '')
+        
+        if not sender_email or not sender_password:
+            print("Email credentials not configured. Skipping email send.")
+            return False
+        
+        message = MIMEMultipart()
+        message['From'] = sender_email
+        message['To'] = email
+        message['Subject'] = 'JurisMind AI - Password Reset OTP'
+        
+        body = f"""
+        Dear User,
+        
+        Your OTP for password reset is: {otp}
+        
+        This OTP is valid for 10 minutes only.
+        
+        If you didn't request this, please ignore this email.
+        
+        Thanks,
+        JurisMind AI Team
+        """
+        
+        message.attach(MIMEText(body, 'plain'))
+        
+        server = smtplib.SMTP(smtp_server, smtp_port)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        text = message.as_string()
+        server.sendmail(sender_email, email, text)
+        server.quit()
+        
+        print(f"OTP sent successfully to email: {email}")
+        return True
+        
+    except Exception as e:
+        print(f"Failed to send email: {str(e)}")
+        return False
+
+def send_otp_sms(phone, otp):
+    """Send OTP via SMS (using a simple SMS service)"""
+    try:
+        # For demo purposes, we'll use a free SMS service
+        # In production, you'd use services like Twilio, MessageBird, etc.
+        
+        # Remove any non-digits from phone number
+        phone_clean = re.sub(r'\D', '', phone)
+        
+        # For demo, we'll just print the SMS (you can integrate with real SMS service)
+        sms_message = f"Your JurisMind AI password reset OTP is: {otp}. Valid for 10 minutes."
+        
+        # Example with a free SMS service (you'd need to sign up)
+        # This is just a placeholder - replace with actual SMS service
+        sms_url = f"https://api.textlocal.in/send/?apikey=YOUR_API_KEY&numbers={phone_clean}&message={sms_message}"
+        
+        # For now, just print (in production, make actual API call)
+        print(f"SMS would be sent to {phone}: {sms_message}")
+        print(f"To enable SMS, configure SMS service API in send_otp_sms function")
+        
+        return True
+        
+    except Exception as e:
+        print(f"Failed to send SMS: {str(e)}")
+        return False
+
 @app.route('/api/auth/forgot-password', methods=['POST'])
 def forgot_password():
     """Send OTP for password reset"""
@@ -1377,9 +1454,20 @@ def forgot_password():
             'expires': datetime.now() + timedelta(minutes=10)
         }
 
-        # For development, print OTP (in production, send via email/SMS)
+        # Send OTP via email or SMS
+        email_sent = False
+        sms_sent = False
+        
+        if '@' in identifier:  # Email address
+            email_sent = send_otp_email(identifier, otp)
+        else:  # Phone number
+            sms_sent = send_otp_sms(identifier, otp)
+        
+        # Always print OTP for development (as backup)
         print(f"\n{'='*50}")
         print(f"PASSWORD RESET OTP for {identifier}: {otp}")
+        print(f"Email sent: {email_sent}")
+        print(f"SMS sent: {sms_sent}")
         print(f"{'='*50}\n")
 
         return jsonify({

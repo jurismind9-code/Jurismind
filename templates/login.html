@@ -99,12 +99,21 @@
 
         .input-wrapper input {
             width: 100%;
-            padding: 14px 15px 14px 45px;
+            padding: 14px 45px 14px 45px;
             border: 2px solid #e0e0e0;
             border-radius: 12px;
             font-size: 15px;
             transition: all 0.3s ease;
             background: #f8f9fa;
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            caret-color: #333;
+            text-indent: 0;
+        }
+
+        .input-wrapper.password-input input {
+            padding: 14px 50px 14px 45px;
         }
 
         .input-wrapper input:focus {
@@ -112,6 +121,11 @@
             border-color: #e91e63;
             background: white;
             box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.1);
+            caret-color: #e91e63;
+        }
+
+        .input-wrapper input::selection {
+            background: rgba(233, 30, 99, 0.2);
         }
 
         .input-wrapper input::placeholder {
@@ -393,7 +407,7 @@
 
                 <div class="form-group">
                     <label>Password</label>
-                    <div class="input-wrapper">
+                    <div class="input-wrapper password-input">
                         <i class="fas fa-lock"></i>
                         <input type="password" id="password" placeholder="Enter your password" required>
                         <i class="fas fa-eye password-toggle" onclick="togglePassword()"></i>
